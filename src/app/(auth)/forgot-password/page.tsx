@@ -8,7 +8,6 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation'
 
-
 const ForgotPasswordPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState("");
@@ -41,10 +40,10 @@ const ForgotPasswordPage = () => {
                 <span className='text-white'>Easy to create and take quizzes online</span>
             </div>
             {/* Right */}
-            <div className="flex-1 flex flex-col items-center justify-center min-h-screen gap-10">
+            <div className="flex-1 flex flex-col items-center justify-center min-h-screen gap-10 px-2">
                 <Image className='flex lg:hidden' src='/assets/logo-transparent.png' width={100} height={100} alt='Logo' />
-                <h1 className='font-bold text-4xl'>Forgot Your Password</h1>
-                <span className='text-lg italic'>Password Recovery Link will be sent to the email</span>
+                <h1 className='font-bold text-4xl text-center'>Forgot Your Password</h1>
+                <span className='text-base md:text-lg italic text-center'>Password Recovery Link will be sent to the email</span>
                 <form className='flex flex-col gap-5' onSubmit={handlePasswordReset}>
                     <Input className='border-gray-800 w-[300px] rounded-full' type='email' required placeholder='Enter your Email' value={email} onChange={handleEmailChange} />
                     <Button type="submit">Get Recovery Link</Button>
