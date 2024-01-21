@@ -7,42 +7,65 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation'
-
+import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { LuAlertTriangle } from "react-icons/lu";
 
 const SignUpPage = () => {
     const router = useRouter();
     const { googleSignIn } = UserAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleSignUpWithGoogle = async () => {
         try {
-            await googleSignIn()
+            await googleSignIn();
+            await new Promise<void>((resolve) => {
+                const unsubscribe = onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        unsubscribe();
+                        resolve();
+                    }
+                });
+            });
+            router.push('/');
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            setErrorMessage('Error signing up with Google. Please try again.');
         }
     }
 
     const handleSignUpWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log("User Created with the data: ", user);
-            router.push('/')
-        } catch (error) {
-            console.log(error);
+            await createUserWithEmailAndPassword(auth, email, password);
+            router.push('/');
+        } catch (error: any) {
+            if (error.code === 'auth/invalid-email') {
+                setErrorMessage('Invalid email format.');
+            } else if (error.code === 'auth/weak-password') {
+                setErrorMessage('Weak password.');
+            } else if (error.code === 'auth/email-already-in-use') {
+                setErrorMessage('Email address is already in use.');
+            } else {
+                setErrorMessage('An error occurred. Please try again.');
+            }
         }
+        setTimeout(() => {
+            setErrorMessage(null);
+        }, 5000);
     }
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
-    }
+        setErrorMessage(null);
+    };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
-    }
+        setErrorMessage(null);
+    };
 
     return (
         <div className='flex items-center justify-between min-h-screen w-full text-center'>
@@ -69,6 +92,14 @@ const SignUpPage = () => {
                 <form className='flex flex-col gap-5' onSubmit={handleSignUpWithEmail}>
                     <Input className='border-gray-800 w-[300px] rounded-full' type='email' required placeholder='Enter your Email Here' value={email} onChange={handleEmailChange} />
                     <Input className='border-gray-800 w-[300px] rounded-full' type='password' required placeholder='Enter your Password Here' value={password} onChange={handlePasswordChange} />
+                    <div className='flex items-center justify-center'>
+                        {errorMessage && (
+                            <div className="flex items-center gap-2 text-red-600">
+                                <LuAlertTriangle color='red' size={25} />
+                                <span>{errorMessage}</span>
+                            </div>
+                        )}
+                    </div>
                     <Button type="submit">Sign Up</Button>
                     <div className="flex flex-col items-center text-center font-semibold gap-3">
                         <Link className='hover:underline hover:text-blue-600 transition-colors duration-200' href='/signin'>Already have an account?</Link>

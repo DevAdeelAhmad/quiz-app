@@ -1,48 +1,65 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import { UserAuth } from '@/context/AuthContext'
-import Image from 'next/image';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Input } from '@/components/ui/input';
+import { UserAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation'
-
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { LuAlertTriangle } from "react-icons/lu";
 
 const SignInPage = () => {
     const router = useRouter();
     const { googleSignIn } = UserAuth();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleSignInWithGoogle = async () => {
         try {
-            await googleSignIn()
+            await googleSignIn();
+            await new Promise<void>((resolve) => {
+                const unsubscribe = onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        unsubscribe();
+                        resolve();
+                    }
+                });
+            });
+            router.push('/');
         } catch (error) {
-            console.log(error)
+            setErrorMessage('Error signing in with Google. Please try again.');
         }
     }
 
     const handleSignInWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log("User Logged in with data: ", user);
-            router.push('/')
-        } catch (error) {
-            console.log(error);
+            await signInWithEmailAndPassword(auth, email, password);
+            router.push('/');
+        } catch (error: any) {
+            if (error.code === 'auth/invalid-credential') {
+                setErrorMessage('Wrong email or password entered.');
+            } else {
+                setErrorMessage('An error occurred. Please try again.');
+            }
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 3000);
         }
-    }
+    };
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
-    }
+        setErrorMessage(null);
+    };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
-    }
+        setErrorMessage(null);
+    };
 
     return (
         <div className='flex items-center justify-between min-h-screen w-full text-center'>
@@ -69,12 +86,17 @@ const SignInPage = () => {
                 <form className='flex flex-col gap-5' onSubmit={handleSignInWithEmail}>
                     <Input className='border-gray-800 w-[300px] rounded-full' type='email' required placeholder='Enter your Email Here' value={email} onChange={handleEmailChange} />
                     <Input className='border-gray-800 w-[300px] rounded-full' type='password' required placeholder='Enter your Password Here' value={password} onChange={handlePasswordChange} />
+                    {errorMessage && (
+                        <div className="flex items-center gap-2 text-red-600">
+                            <LuAlertTriangle color='red' size={25} />
+                            <span>{errorMessage}</span>
+                        </div>
+                    )}
                     <Button type="submit">Sign In</Button>
                     <div className="flex flex-col items-center text-center font-semibold gap-3">
                         <Link className='hover:underline hover:text-blue-600 transition-colors duration-200' href='/forgot-password'>Forgot Your Password?</Link>
                         <Link className='hover:underline hover:text-blue-600 transition-colors duration-200' href='/signup'>Don{"'"}t have an account?</Link>
                     </div>
-
                 </form>
             </div>
         </div>

@@ -6,25 +6,34 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import { LuAlertTriangle } from "react-icons/lu";
 
 const ForgotPasswordPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState("");
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
+        setErrorMessage(null);
     }
 
     const handlePasswordReset = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const reset = await sendPasswordResetEmail(auth, email);
-            console.log("Password Recovery Sent to : ", email);
-            router.push('/signin')
-        } catch (error) {
-            console.log(error);
+            await sendPasswordResetEmail(auth, email);
+            router.push('/signin');
+        } catch (error: any) {
+            if (error.code === 'auth/user-not-found') {
+                setErrorMessage('User not found.');
+            } else {
+                setErrorMessage('An error occurred. Please try again.');
+            }
         }
+        setTimeout(() => {
+            setErrorMessage(null);
+        }, 5000);
     }
 
     return (
@@ -46,6 +55,12 @@ const ForgotPasswordPage = () => {
                 <span className='text-base md:text-lg italic text-center'>Password Recovery Link will be sent to the email</span>
                 <form className='flex flex-col gap-5' onSubmit={handlePasswordReset}>
                     <Input className='border-gray-800 w-[300px] rounded-full' type='email' required placeholder='Enter your Email' value={email} onChange={handleEmailChange} />
+                    {errorMessage && (
+                        <div className="flex items-center gap-2 text-red-600">
+                            <LuAlertTriangle color='red' size={25} />
+                            <span>{errorMessage}</span>
+                        </div>
+                    )}
                     <Button type="submit">Get Recovery Link</Button>
                 </form>
             </div>
