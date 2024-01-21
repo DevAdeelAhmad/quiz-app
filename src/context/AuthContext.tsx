@@ -1,10 +1,12 @@
-"use client";
+"use client"
 import { createContext, ReactNode, useState, useEffect, FC, useContext } from "react";
 import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
+  getRedirectResult,
+  signInWithRedirect,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -27,7 +29,7 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider);
+    signInWithRedirect(auth, provider);
   };
 
   const signout = () => {
@@ -40,6 +42,21 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
     });
     return () => unsubscribe();
   }, [user]);
+
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          setUser(result.user);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    handleRedirectResult();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, googleSignIn, signout }}>

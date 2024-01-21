@@ -1,21 +1,20 @@
 "use client"
+import { UserAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import React from 'react'
-import { useState } from 'react'
-import { UserAuth } from '@/context/AuthContext'
-
-import { BsArrowLeftShort } from 'react-icons/bs'
-import { GoHomeFill } from "react-icons/go";
-import { IoSearch } from "react-icons/io5";
-import { BiPlus } from "react-icons/bi";
-import { FaList } from "react-icons/fa6";
-import { ImStatsDots } from "react-icons/im";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { VscSignOut } from "react-icons/vsc";
-import { VscSignIn } from "react-icons/vsc";
+import { BiPlus } from "react-icons/bi";
+import { BsArrowLeftShort } from 'react-icons/bs';
+import { FaList } from "react-icons/fa6";
+import { GoHomeFill } from "react-icons/go";
+import { ImStatsDots } from "react-icons/im";
+import { IoSearch } from "react-icons/io5";
+import { VscSignIn, VscSignOut } from "react-icons/vsc";
 
 
 const Sidebar = () => {
+    const router = useRouter();
     const { signout, user } = UserAuth();
     const [open, setOpen] = useState(false);
     const handleSidebar = () => {
@@ -57,10 +56,18 @@ const Sidebar = () => {
                     <ImStatsDots color='black' size={23} />
                     <span className={`font-semibold ${open ? "flex" : "hidden"}`}>Stats</span>
                 </Link>
-                <div onClick={handleSignOut} className='absolute bottom-10 flex items-center gap-2 cursor-pointer'>
-                    <VscSignOut color='black' size={30} />
-                    <span className={`font-semibold ${open ? "flex" : "hidden"}`}>Signout</span>
-                </div>
+                {user ? (
+                    <div onClick={handleSignOut} className='absolute bottom-10 flex items-center gap-2 cursor-pointer'>
+                        <VscSignOut color='black' size={30} />
+                        <span className={`font-semibold ${open ? "flex" : "hidden"}`}>SignOut</span>
+                    </div>
+                ) : (
+                    <div onClick={() => router.push("/signin")} className='absolute bottom-10 flex items-center gap-2 cursor-pointer'>
+                        <VscSignIn color='black' size={30} />
+                        <span className={`font-semibold ${open ? "flex" : "hidden"}`}>SignIn</span>
+                    </div>
+                )
+                }
             </div>
         </aside>
     )
