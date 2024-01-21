@@ -5,8 +5,8 @@ import { AuthContextProvider } from "@/context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 import NextTopLoader from 'nextjs-toploader'
 export const metadata: Metadata = {
-  title: "Quizify",
-  description: "Quizify | Find & Take!",
+  title: "Quizzy",
+  description: "Quizzy | Find & Take!",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthContextProvider>
-          <NextTopLoader color="red" />
+          <NextTopLoader zIndex={1000} height={5} color="#3a9efd" />
           {children}
         </AuthContextProvider>
       </body>

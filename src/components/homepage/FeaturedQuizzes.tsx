@@ -7,7 +7,8 @@ const data = [
         time: "10m",
         rating: 4.5,
         quizImageUrl: "/assets/quiz-img-temp.jpg",
-        creatorImgUrl: "/assets/pfp.png"
+        creatorImgUrl: "/assets/pfp.png",
+        isFavorite: true
     },
     {
         creatorName: "John Doe 1",
@@ -15,7 +16,8 @@ const data = [
         time: "15m",
         rating: 5,
         quizImageUrl: "/assets/quiz-img-temp.jpg",
-        creatorImgUrl: "/assets/pfp.png"
+        creatorImgUrl: "/assets/pfp.png",
+        isFavorite: false
     },
     {
         creatorName: "John Doe 2",
@@ -23,7 +25,8 @@ const data = [
         time: "12m",
         rating: 4.9,
         quizImageUrl: "/assets/quiz-img-temp.jpg",
-        creatorImgUrl: "/assets/pfp.png"
+        creatorImgUrl: "/assets/pfp.png",
+        isFavorite: true
     },
     {
         creatorName: "John Doe 3",
@@ -31,7 +34,8 @@ const data = [
         time: "20m",
         rating: 4.8,
         quizImageUrl: "/assets/quiz-img-temp.jpg",
-        creatorImgUrl: "/assets/pfp.png"
+        creatorImgUrl: "/assets/pfp.png",
+        isFavorite: false
     },
 ]
 
@@ -41,7 +45,7 @@ const FeaturedQuizzes = () => {
             <h1 className='text-3xl font-semibold'>Featured Quizzes</h1>
             <div className="flex gap-5 flex-wrap items-center justify-center w-full">
                 {data.map((quiz, index) => (
-                    <SingleFeaturedQuiz key={index} creatorImgUrl={quiz.creatorImgUrl} creatorName={quiz.creatorName} quizName={quiz.quizName} quizImageUrl={quiz.quizImageUrl} rating={quiz.rating} time={quiz.time} />
+                    <SingleFeaturedQuiz key={index} isFavorite={quiz.isFavorite} creatorImgUrl={quiz.creatorImgUrl} creatorName={quiz.creatorName} quizName={quiz.quizName} quizImageUrl={quiz.quizImageUrl} rating={quiz.rating} time={quiz.time} />
                 ))}
             </div>
         </section>
