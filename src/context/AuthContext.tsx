@@ -1,14 +1,20 @@
-"use client"
-import { createContext, ReactNode, useState, useEffect, FC, useContext } from "react";
+"use client";
+import { auth } from "@/lib/firebase";
 import {
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
   GoogleAuthProvider,
   getRedirectResult,
+  onAuthStateChanged,
   signInWithRedirect,
+  signOut,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import {
+  FC,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface AuthContextProps {
   user: any;
@@ -29,7 +35,9 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    signInWithRedirect(auth, provider).catch((error) => {
+      console.error("Google Sign-In Error:", error);
+    });
   };
 
   const signout = () => {
@@ -40,8 +48,8 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    return () => unsubscribe();
-  }, [user]);
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const handleRedirectResult = async () => {
@@ -51,7 +59,7 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
           setUser(result.user);
         }
       } catch (error) {
-        console.log(error);
+        console.error("Redirect Result Error:", error);
       }
     };
 
@@ -68,7 +76,9 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
 export const UserAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useUserAuth must be used within an AuthContextProvider");
+    throw new Error(
+      "useUserAuth must be used within an AuthContextProvider"
+    );
   }
   return context;
 };

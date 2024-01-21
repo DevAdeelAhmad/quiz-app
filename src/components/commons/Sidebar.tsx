@@ -33,7 +33,7 @@ const Sidebar = () => {
             <BsArrowLeftShort className={`text-white bg-fuchsia-500 text-3xl rounded-full cursor-pointer absolute -right-[14px] top-9 transition-all duration-300 ${!open && "rotate-180"}`} onClick={handleSidebar} />
             <Link className='flex items-center gap-2 duration-300 w-full justify-center' href='/'>
                 <Image src='/assets/logo-transparent.png' width={38} height={38} alt='logo' />
-                <span className={`italic font-semibold ${open ? "flex" : "hidden"}`}>Quizify</span>
+                <span className={`font-semibold ${open ? "flex" : "hidden"}`}>Quizify</span>
             </Link>
             <div className="flex flex-col gap-10 pt-10 w-full">
                 <Link className='flex items-center gap-2' href="/">
