@@ -1,6 +1,7 @@
 "use client"
 import Sidebar from "@/components/commons/Sidebar";
 import FeaturedQuizzes from "@/components/homepage/FeaturedQuizzes";
+import QuizCategories from "@/components/homepage/QuizCategories";
 import { UserAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 export default function Home() {
@@ -20,7 +21,7 @@ export default function Home() {
       <Sidebar />
       <div className="flex flex-col min-h-screen w-full items-center">
         <FeaturedQuizzes />
-        <div className="min-h-screen w-full"></div>
+        <QuizCategories />
       </div>
     </main >
   );

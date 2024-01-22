@@ -65,7 +65,7 @@ const SignInPage = () => {
     }
     else
         return (
-            <div className='flex items-center justify-between min-h-screen w-full text-center'>
+            <main className='flex items-center justify-between min-h-screen w-full text-center'>
                 <Link href='/' className='hidden lg:flex flex-col gap-2 items-center justify-center absolute top-10 right-10'>
                     <Image src='/assets/logo-transparent.png' width={100} height={100} alt='Logo' />
                     <span className='font-semibold'>Find and Take</span>
@@ -102,7 +102,7 @@ const SignInPage = () => {
                         </div>
                     </form>
                 </div>
-            </div>
+            </main>
         )
 }
 

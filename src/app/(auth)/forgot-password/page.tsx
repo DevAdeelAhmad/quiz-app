@@ -37,7 +37,7 @@ const ForgotPasswordPage = () => {
     }
 
     return (
-        <div className='flex items-center justify-between min-h-screen w-full'>
+        <main className='flex items-center justify-between min-h-screen w-full'>
             <Link href='/' className='hidden lg:flex flex-col gap-2 items-center justify-center absolute top-10 right-10'>
                 <Image src='/assets/logo-transparent.png' width={100} height={100} alt='Logo' />
                 <span className='font-semibold'>Find and Take</span>
@@ -64,7 +64,7 @@ const ForgotPasswordPage = () => {
                     <Button type="submit">Get Recovery Link</Button>
                 </form>
             </div>
-        </div>
+        </main>
     )
 }
 

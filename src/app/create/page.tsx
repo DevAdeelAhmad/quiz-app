@@ -2,7 +2,7 @@ import React from 'react'
 
 const CreateQuizPage = () => {
     return (
-        <main>
+        <main className='flex items-center justify-center min-h-screen w-full'>
             Create Quiz Page
         </main>
     )

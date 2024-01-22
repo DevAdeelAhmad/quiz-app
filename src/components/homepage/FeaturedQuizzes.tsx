@@ -41,8 +41,8 @@ const data = [
 
 const FeaturedQuizzes = () => {
     return (
-        <section className='flex flex-col gap-5 p-10 items-center'>
-            <h1 className='text-3xl font-semibold'>Featured Quizzes</h1>
+        <section className='flex flex-col gap-5 p-5 lg:p-10 items-center'>
+            <h1 className='text-2xl lg:text-3xl font-semibold'>Featured Quizzes</h1>
             <div className="flex gap-5 flex-wrap items-center justify-center w-full">
                 {data.map((quiz, index) => (
                     <SingleFeaturedQuiz key={index} isFavorite={quiz.isFavorite} creatorImgUrl={quiz.creatorImgUrl} creatorName={quiz.creatorName} quizName={quiz.quizName} quizImageUrl={quiz.quizImageUrl} rating={quiz.rating} time={quiz.time} />
