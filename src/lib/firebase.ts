@@ -1,5 +1,7 @@
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBIEvyizyyY46yhWg9UUJweqNM37Nv3JfI",
   authDomain: "quiz-nextjs-6cf08.firebaseapp.com",
@@ -8,7 +10,9 @@ const firebaseConfig = {
   messagingSenderId: "71412361004",
   appId: "1:71412361004:web:91c0d363126220a83b2e89",
   measurementId: "G-TY8J089JTP",
+  databaseUrl: "https://quiz-nextjs-6cf08-default-rtdb.firebaseio.com/",
 };
 
 export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const database = getDatabase(app);

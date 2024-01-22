@@ -6,6 +6,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoLanguageSharp } from "react-icons/io5";
 import { SiKingstontechnology } from "react-icons/si";
 import { MdOutlineSportsSoccer } from "react-icons/md";
+import { GiClassicalKnowledge } from "react-icons/gi";
 import Link from 'next/link';
 const QuizCategories = () => {
 
@@ -45,13 +46,18 @@ const QuizCategories = () => {
             CategoryIcon: MdOutlineSportsSoccer,
             categoryLink: "/category/sports",
         },
+        {
+            categoryName: "Knowledge",
+            CategoryIcon: GiClassicalKnowledge,
+            categoryLink: "/category/generalKnowledge",
+        },
     ]
     return (
-        <section className='flex flex-col gap-10 py-10 items-center'>
+        <section className='flex flex-col gap-10 py-5 items-center'>
             <h1 className='text-2xl lg:text-3xl font-semibold'>Quiz Categories</h1>
             <div className="flex gap-5 flex-wrap items-center justify-center w-full">
                 {data.map((category, index) => (
-                    <Link className='flex flex-col gap-3 items-center justify-center w-[150px] min-[450px]:!w-[200px] px-10 py-5 rounded-2xl border hover:bg-first hover:text-white transition-all duration-300 shadow-lg'
+                    <Link className='flex flex-col gap-3 items-center justify-center w-[150px] min-[450px]:!w-[200px] px-10 py-5 rounded-2xl border hover:bg-third hover:text-white transition-all duration-300 shadow-lg'
                         key={index} href={category.categoryLink}>
                         <category.CategoryIcon size={30} />
                         <span className='font-semibold text-base'>{category.categoryName}</span>
