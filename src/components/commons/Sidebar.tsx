@@ -1,12 +1,11 @@
 "use client"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { UserAuth } from '@/context/AuthContext';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { BsArrowLeftShort } from 'react-icons/bs';
 import { MdOutlineMenuOpen } from "react-icons/md";
 import SidebarLinks from './SidebarLinks';
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { IoMdClose } from "react-icons/io";
 const Sidebar = () => {
     const router = useRouter();
     const currentRoute = usePathname();
