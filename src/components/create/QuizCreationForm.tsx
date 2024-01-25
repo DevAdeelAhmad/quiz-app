@@ -37,8 +37,7 @@ const QuizCreationForm: React.FC<QuizCreationFormProps> = ({ onContinue, initial
         setSelectedDifficulty(e.target.value);
     };
 
-    const isSubmitDisabled = !quizTitle;
-    // const isSubmitDisabled = !quizTitle || !quizDescription || !selectedCategory || !subCategory || !selectedDifficulty || !duration;
+    const isSubmitDisabled = !quizTitle || !quizDescription || !selectedCategory || !subCategory || !selectedDifficulty || !duration;
 
     return (
         <div className="flex flex-col gap-2 border-2 p-5 rounded-2xl max-w-[800px] w-full">
