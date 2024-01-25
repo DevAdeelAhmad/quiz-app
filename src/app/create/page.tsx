@@ -2,23 +2,46 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/commons/Sidebar';
 import QuizCreationForm from '@/components/create/QuizCreationForm';
-import QuizQuestionsComponent from '@/components/create/QuizQuestion';
+import QuizQuestions from '@/components/create/QuizQuestion';
+import QuizCreationComplete from '@/components/create/QuizCreationComplete';
+import { getDatabase, ref, set } from "firebase/database";
+import { v4 as uuidv4 } from 'uuid';
 const QuizCreationPage: React.FC = () => {
     const [step, setStep] = useState<number>(1);
-    const [quizData, setQuizData] = useState<any>({});
+    const [quizCreationFormData, setQuizCreationFormData] = useState<any>({});
     const [questionData, setQuestionData] = useState<any>({});
     const handleContinue = () => {
         setStep(step + 1);
     };
     const handleQuizFormSubmit = (formData: any) => {
-        console.log('Form Data:', formData);
-        setQuizData(formData);
+        setQuizCreationFormData(formData);
+        console.log('Quiz Creation Form Data:', formData);
         handleContinue();
     };
     const handleQuizQuestionsSubmit = (questions: any) => {
         setQuestionData(questions);
-        setQuizData((prevData: any) => ({ ...prevData, questions }));
-        console.log('Quiz Data:', quizData);
+        const quizId = uuidv4();
+        const mergedData = {
+            quizId,
+            quizTitle: quizCreationFormData.quizTitle,
+            quizDescription: quizCreationFormData.quizDescription,
+            quizCategory: quizCreationFormData.selectedCategory,
+            quizSubCategory: quizCreationFormData.subCategory,
+            quizDifficulty: quizCreationFormData.selectedDifficulty,
+            quizDuration: quizCreationFormData.duration,
+            quizVisibility: quizCreationFormData.visibility,
+            quizTags: quizCreationFormData.tags,
+            quizQuestions: questions,
+        };
+        const quizzesRef = ref(getDatabase(), 'quizzes');
+        set(quizzesRef, [mergedData])
+            .then(() => {
+                console.log('Quiz Data added to the database:', mergedData);
+                handleContinue();
+            })
+            .catch((error) => {
+                console.error('Error adding Quiz Data to the database:', error);
+            });
     };
     const handleQuizQuestionsBack = () => {
         setStep(1);
@@ -32,15 +55,18 @@ const QuizCreationPage: React.FC = () => {
                         <h1 className='text-2xl lg:text-3xl font-semibold'>Create A Quiz</h1>
                         <QuizCreationForm
                             onContinue={handleQuizFormSubmit}
-                            initialQuestionData={quizData}
+                            initialQuestionData={quizCreationFormData}
                         />
                     </>
                 )}
                 {step === 2 && (
-                    <QuizQuestionsComponent
+                    <QuizQuestions
                         onSubmit={handleQuizQuestionsSubmit}
                         onBack={handleQuizQuestionsBack}
                     />
+                )}
+                {step === 3 && (
+                    <QuizCreationComplete />
                 )}
             </div>
         </main>
