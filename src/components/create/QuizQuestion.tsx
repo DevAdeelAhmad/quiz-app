@@ -203,7 +203,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({ onBack, onSubmit }) => {
                     </div>
                 </div>
             ))}
-            <div className="w-full flex justify-center gap-5">
+            <div className="w-full flex flex-wrap items-center justify-center gap-5">
                 <Button onClick={handleSubmit} className="text-white bg-blue-500 py-2">
                     Submit
                 </Button>
