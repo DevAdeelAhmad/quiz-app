@@ -1,13 +1,12 @@
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { UserAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 import { BiPlus } from 'react-icons/bi';
 import { FaList } from 'react-icons/fa6';
 import { GoHomeFill } from 'react-icons/go';
 import { ImStatsDots } from 'react-icons/im';
 import { IoSearch } from 'react-icons/io5';
 import { VscSignIn, VscSignOut } from 'react-icons/vsc';
-
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 interface SidebarLinksProps {
   currentRoute: string;
   textStyle: string;
@@ -45,10 +44,26 @@ const SidebarLinks: React.FC<SidebarLinksProps> = ({
       <span className={textStyle}>Statistics</span>
     </Link>
     {user ? (
-      <div onClick={handleSignOut} className="absolute bottom-10 flex items-center gap-2 cursor-pointer text-third">
-        <VscSignOut size={30} />
-        <span className={textStyle}>SignOut</span>
-      </div>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <div className="absolute bottom-10 flex items-center gap-2 cursor-pointer text-third">
+            <VscSignOut size={30} /><span className={textStyle}>SignOut</span>
+          </div>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Continuing will log you out from your account.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSignOut}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     ) : (
       <div onClick={() => routerPush?.('/signin')} className="absolute bottom-10 flex items-center gap-2 cursor-pointer text-third">
         <VscSignIn size={30} />
