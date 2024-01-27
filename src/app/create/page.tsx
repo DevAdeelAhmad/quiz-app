@@ -8,7 +8,7 @@ import { getDatabase, ref, set } from "firebase/database";
 import { v4 as uuidv4 } from 'uuid';
 import { UserAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-const QuizCreationPage: React.FC = () => {
+const QuizCreationPage = () => {
     const { user } = UserAuth();
     const router = useRouter();
     const [step, setStep] = useState<number>(1);
@@ -50,9 +50,7 @@ const QuizCreationPage: React.FC = () => {
     const handleQuizQuestionsBack = () => {
         setStep(1);
     };
-    if (!user) {
-        return router.push('/signin')
-    }
+
     return (
         <main className="flex min-h-screen w-full">
             <Sidebar />
