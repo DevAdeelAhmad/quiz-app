@@ -8,12 +8,13 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { LuAlertTriangle } from "react-icons/lu";
+import { UserAuth } from '@/context/AuthContext';
 
 const ForgotPasswordPage = () => {
     const router = useRouter();
+    const { user } = UserAuth()
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
         setErrorMessage(null);
@@ -35,7 +36,12 @@ const ForgotPasswordPage = () => {
             setErrorMessage(null);
         }, 5000);
     }
-
+    if (user) {
+        if (typeof window !== 'undefined') {
+            router.push('/');
+        }
+        return null;
+    }
     return (
         <main className='flex items-center justify-between min-h-screen w-full'>
             <Link href='/' className='hidden lg:flex flex-col gap-2 items-center justify-center absolute top-10 right-10'>

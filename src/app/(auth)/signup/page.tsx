@@ -66,7 +66,10 @@ const SignUpPage = () => {
     };
 
     if (user) {
-        return router.push('/')
+        if (typeof window !== 'undefined') {
+            router.push('/');
+        }
+        return null;
     }
     else
         return (
