@@ -4,7 +4,7 @@ import Sidebar from '@/components/commons/Sidebar';
 import QuizCreationForm from '@/components/create/QuizCreationForm';
 import QuizQuestions from '@/components/create/QuizQuestion';
 import QuizCreationComplete from '@/components/create/QuizCreationComplete';
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, get } from "firebase/database";
 import { v4 as uuidv4 } from 'uuid';
 import { UserAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -22,7 +22,7 @@ const QuizCreationPage = () => {
         console.log('Quiz Creation Form Data:', formData);
         handleContinue();
     };
-    const handleQuizQuestionsSubmit = (questions: any) => {
+    const handleQuizQuestionsSubmit = async (questions: any) => {
         setQuestionData(questions);
         const quizId = uuidv4();
         const mergedData = {
@@ -36,9 +36,12 @@ const QuizCreationPage = () => {
             quizVisibility: quizCreationFormData.visibility,
             quizTags: quizCreationFormData.tags,
             quizQuestions: questions,
+            quizRating: 0
         };
         const quizzesRef = ref(getDatabase(), 'quizzes');
-        set(quizzesRef, [mergedData])
+        const existingQuizzes = (await get(quizzesRef)).val() || [];
+        const updatedQuizzes = [...existingQuizzes, mergedData];
+        set(quizzesRef, updatedQuizzes)
             .then(() => {
                 console.log('Quiz Data added to the database:', mergedData);
                 handleContinue();
@@ -46,36 +49,40 @@ const QuizCreationPage = () => {
             .catch((error) => {
                 console.error('Error adding Quiz Data to the database:', error);
             });
+
     };
     const handleQuizQuestionsBack = () => {
         setStep(1);
     };
-
-    return (
-        <main className="flex min-h-screen w-full">
-            <Sidebar />
-            <div className="flex flex-col items-center w-full py-10 gap-5 p-4">
-                {step === 1 && (
-                    <>
-                        <h1 className='text-2xl lg:text-3xl font-semibold'>Create A Quiz</h1>
-                        <QuizCreationForm
-                            onContinue={handleQuizFormSubmit}
-                            initialQuestionData={quizCreationFormData}
+    if (!user) {
+        return router.push('/signin')
+    }
+    else
+        return (
+            <main className="flex min-h-screen w-full">
+                <Sidebar />
+                <div className="flex flex-col items-center w-full py-10 gap-5 p-4">
+                    {step === 1 && (
+                        <>
+                            <h1 className='text-2xl lg:text-3xl font-semibold'>Create A Quiz</h1>
+                            <QuizCreationForm
+                                onContinue={handleQuizFormSubmit}
+                                initialQuestionData={quizCreationFormData}
+                            />
+                        </>
+                    )}
+                    {step === 2 && (
+                        <QuizQuestions
+                            onSubmit={handleQuizQuestionsSubmit}
+                            onBack={handleQuizQuestionsBack}
                         />
-                    </>
-                )}
-                {step === 2 && (
-                    <QuizQuestions
-                        onSubmit={handleQuizQuestionsSubmit}
-                        onBack={handleQuizQuestionsBack}
-                    />
-                )}
-                {step === 3 && (
-                    <QuizCreationComplete />
-                )}
-            </div>
-        </main>
-    );
+                    )}
+                    {step === 3 && (
+                        <QuizCreationComplete />
+                    )}
+                </div>
+            </main>
+        );
 };
 
 export default QuizCreationPage;

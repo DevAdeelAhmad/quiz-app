@@ -1,27 +1,9 @@
 "use client";
 import { auth } from "@/lib/firebase";
-import {
-  GoogleAuthProvider,
-  getRedirectResult,
-  onAuthStateChanged,
-  signInWithRedirect,
-  signOut,
-} from "firebase/auth";
-import {
-  FC,
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { GoogleAuthProvider, getRedirectResult, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
+import { FC, ReactNode, createContext, useContext, useEffect, useState } from "react";
 
-interface AuthContextProps {
-  user: any;
-  googleSignIn: () => void;
-  signout: () => void;
-}
-
+interface AuthContextProps { user: any; googleSignIn: () => void; signout: () => void; }
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 interface AuthContextProviderProps {

@@ -59,7 +59,6 @@ const SignInPage = () => {
         setPassword(e.target.value);
         setErrorMessage(null);
     };
-
     if (user) {
         return router.push('/')
     }

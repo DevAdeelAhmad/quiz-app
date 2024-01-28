@@ -44,7 +44,7 @@ const QuizCreationForm: React.FC<QuizCreationFormProps> = ({
         initialQuestionData?.visibility || ""
     );
     const [duration, setDuration] = useState(
-        initialQuestionData?.duration || ""
+        initialQuestionData?.duration || 0
     );
     const [tags, setTags] = useState<string[]>(
         initialQuestionData?.tags || []
