@@ -19,7 +19,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange, onClearFilte
                 >
                     <option value='' disabled>Select Difficulty</option>
                     <option value='easy'>Easy</option>
-                    <option value='medium'>Medium</option>
+                    <option value='normal'>Normal</option>
                     <option value='hard'>Hard</option>
                 </select>
                 <select

@@ -27,12 +27,17 @@ export const getQuizzes = async (): Promise<Quiz[]> => {
             quizTags: quizData.quizTags,
             quizTitle: quizData.quizTitle,
             quizVisibility: quizData.quizVisibility,
+            categoryImage: "",
+            quizRating: 5,
           };
           return quiz;
         }
       );
+      const publicQuizzes = quizzes.filter(
+        (quiz) => quiz.quizVisibility === "Public"
+      );
 
-      return quizzes;
+      return publicQuizzes;
     } else {
       console.error("No quizzes found in the database.");
       return [];

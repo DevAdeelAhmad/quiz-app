@@ -32,11 +32,13 @@ const QuizCreationPage = () => {
             quizCategory: quizCreationFormData.selectedCategory,
             quizSubCategory: quizCreationFormData.subCategory,
             quizDifficulty: quizCreationFormData.selectedDifficulty,
-            quizDuration: quizCreationFormData.duration,
+            quizDuration: parseInt(quizCreationFormData.duration, 10),
             quizVisibility: quizCreationFormData.visibility,
-            quizTags: quizCreationFormData.tags,
+            ...(quizCreationFormData.visibility === "Public" && { quizTags: quizCreationFormData.tags }),
+            ...(quizCreationFormData.visibility === "Private" && { accessEmails: quizCreationFormData.accessEmails }),
             quizQuestions: questions,
-            quizRating: 0
+            quizRating: 5,
+            userId: user?.uid || "",
         };
         const quizzesRef = ref(getDatabase(), 'quizzes');
         const existingQuizzes = (await get(quizzesRef)).val() || [];

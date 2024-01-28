@@ -4,9 +4,8 @@ import Filters from '@/components/search/Filters';
 import SearchResults from '@/components/search/SearchResults';
 import { Input } from '@/components/ui/input';
 import getCategories from '@/lib/getCategories';
-import { getQuizzes } from '@/lib/getQuizzes';
+import { getQuizzes } from '@/lib/getPublicQuizzes';
 import { Quiz } from '@/lib/interfaces';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface Category {
@@ -33,7 +32,7 @@ const SearchPage = () => {
 
     useEffect(() => {
         const fetchQuizzesAndCategories = async () => {
-            const fetchedQuizzes: Quiz[] = await getQuizzes();
+            const fetchedQuizzes: Quiz[] = await getQuizzes(); // Update this function to exclude private quizzes
             const categoriesData = await getCategories();
             const quizzesWithCategory: QuizWithCategory[] = fetchedQuizzes.map((quiz) => {
                 const category = categoriesData.find((cat) => cat.name === quiz.quizCategory);
@@ -53,10 +52,11 @@ const SearchPage = () => {
         setSearchTerm(value);
         const filtered = quizzes.filter(
             (quiz) =>
-                quiz.quizTitle.toLowerCase().includes(value.toLowerCase()) ||
-                quiz.quizCategory.toLowerCase().includes(value.toLowerCase()) ||
-                quiz.quizTags?.some((tag) => tag.toLowerCase().includes(value.toLowerCase())) ||
-                quiz.quizSubCategory.toLowerCase().includes(value.toLowerCase())
+                quiz.quizVisibility === 'Public' &&
+                (quiz.quizTitle.toLowerCase().includes(value.toLowerCase()) ||
+                    quiz.quizCategory.toLowerCase().includes(value.toLowerCase()) ||
+                    quiz.quizTags?.some((tag) => tag.toLowerCase().includes(value.toLowerCase())) ||
+                    quiz.quizSubCategory.toLowerCase().includes(value.toLowerCase()))
         );
         setFilteredQuizzes(filtered);
     };
