@@ -18,7 +18,6 @@ const QuizCreationPage = () => {
     const handleContinue = () => {
         setStep(step + 1);
     };
-
     const handleQuizFormSubmit = (formData: any) => {
         setQuizCreationFormData(formData);
         console.log('Quiz Creation Form Data:', formData);
