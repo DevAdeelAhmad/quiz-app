@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UserAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
-import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ const SignUpPage = () => {
     const { user, googleSignIn } = UserAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [displayName, setDisplayName] = useState("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleSignUpWithGoogle = async () => {
@@ -37,7 +38,10 @@ const SignUpPage = () => {
     const handleSignUpWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCredential.user, { displayName: displayName });
+
+            console.log(userCredential.user);
             router.push('/');
         } catch (error: any) {
             if (error.code === 'auth/invalid-email') {
@@ -54,17 +58,18 @@ const SignUpPage = () => {
             setErrorMessage(null);
         }, 5000);
     }
-
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
         setErrorMessage(null);
     };
-
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
         setErrorMessage(null);
     };
-
+    const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDisplayName(e.target.value);
+        setErrorMessage(null);
+    };
     if (user) {
         if (typeof window !== 'undefined') {
             router.push('/');
@@ -95,6 +100,7 @@ const SignUpPage = () => {
                     </div>
                     <span className='font-semibold text-xl'>or</span>
                     <form className='flex flex-col gap-5' onSubmit={handleSignUpWithEmail}>
+                        <Input className='border-gray-800 w-[300px] rounded-full' type='text' required placeholder='Enter your Display Name' value={displayName} onChange={handleDisplayNameChange} />
                         <Input className='border-gray-800 w-[300px] rounded-full' type='email' required placeholder='Enter your Email Here' value={email} onChange={handleEmailChange} />
                         <Input className='border-gray-800 w-[300px] rounded-full' type='password' required placeholder='Enter your Password Here' value={password} onChange={handlePasswordChange} />
                         <div className='flex items-center justify-center'>
