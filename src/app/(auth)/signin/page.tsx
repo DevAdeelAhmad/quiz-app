@@ -9,8 +9,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { LuAlertTriangle } from "react-icons/lu";
-
+import { useToast } from "@/components/ui/use-toast"
 const SignInPage = () => {
+    const { toast } = useToast()
     const router = useRouter();
     const { user, googleSignIn } = UserAuth();
     const [email, setEmail] = useState('');
@@ -37,7 +38,11 @@ const SignInPage = () => {
         e.preventDefault();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            router.push('/');
+            toast({
+                title: "Success",
+                description: "Sign in Success!",
+                variant: "success"
+            })
         } catch (error: any) {
             if (error.code === 'auth/invalid-credential') {
                 setErrorMessage('Wrong email or password entered.');
@@ -59,11 +64,8 @@ const SignInPage = () => {
         setPassword(e.target.value);
         setErrorMessage(null);
     };
-    if (user) {
-        if (typeof window !== 'undefined') {
-            router.push('/');
-        }
-        return null;
+    if (user && typeof window !== 'undefined') {
+        router.replace('/');
     }
     else
         return (

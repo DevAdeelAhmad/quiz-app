@@ -235,7 +235,7 @@ const QuizCreationForm: React.FC<QuizCreationFormProps> = ({
                 <option value="" disabled>
                     Select Visibility
                 </option>
-                <option value="Public">Public</option>
+                <option disabled value="Public">Public</option>
                 <option value="Private">Private</option>
             </select>
             {isTagsVisible && (
@@ -289,7 +289,7 @@ const QuizCreationForm: React.FC<QuizCreationFormProps> = ({
                         {accessEmails.map((email, index) => (
                             <div
                                 key={index}
-                                className="flex items-center gap-1 bg-gray-200 rounded-md p-2"
+                                className="flex items-center gap-1 bg-gray-700 text-white rounded-md p-2"
                             >
                                 <span>{email}</span>
                                 <button

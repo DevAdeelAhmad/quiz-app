@@ -6,7 +6,10 @@ import { useState } from 'react';
 import { BsArrowLeftShort } from 'react-icons/bs';
 import { MdOutlineMenuOpen } from "react-icons/md";
 import SidebarLinks from './SidebarLinks';
+import { useToast } from '../ui/use-toast';
+
 const Sidebar = () => {
+    const { toast } = useToast();
     const router = useRouter();
     const currentRoute = usePathname();
     const { signout, user } = UserAuth();
@@ -17,8 +20,19 @@ const Sidebar = () => {
     const handleSignOut = async () => {
         try {
             await signout();
+            toast({
+                title: 'Signed Out!',
+                description: 'You have successfully signed out',
+                variant: "success",
+                duration: 3000,
+            })
         } catch (error) {
-            console.log(error);
+            toast({
+                title: 'Error!',
+                description: "Something Went Wrong! Please try again.",
+                variant: "destructive",
+                duration: 3000,
+            })
         }
     }
     const textStyle = `font-semibold ${open ? "flex" : "hidden"}`;
