@@ -18,8 +18,11 @@ const SignInPage = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState(false); // New loading state
+
     const handleSignInWithGoogle = async () => {
         try {
+            setLoading(true);
             await googleSignIn();
             await new Promise<void>((resolve) => {
                 const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,7 +32,10 @@ const SignInPage = () => {
                     }
                 });
             });
+            router.push("/")
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             setErrorMessage('Error signing in with Google. Please try again.');
         }
     };
@@ -37,14 +43,16 @@ const SignInPage = () => {
     const handleSignInWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            setLoading(true);
             await signInWithEmailAndPassword(auth, email, password);
-            toast({
-                title: "Success",
-                description: "Sign in Success!",
-                variant: "success"
-            })
             router.push('/');
+            toast({
+                title: 'Success',
+                description: 'Sign in Success!',
+                variant: 'success',
+            });
         } catch (error: any) {
+            setLoading(false);
             if (error.code === 'auth/invalid-credential') {
                 setErrorMessage('Wrong email or password entered.');
             } else {
@@ -55,7 +63,6 @@ const SignInPage = () => {
             }, 3000);
         }
     };
-
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
         setErrorMessage(null);
@@ -96,8 +103,13 @@ const SignInPage = () => {
                             <span>{errorMessage}</span>
                         </div>
                     )}
-                    <Button type="submit">Sign In</Button>
-                    <div className="flex flex-col items-center text-center font-semibold gap-3">
+                    <Button type='submit' disabled={loading}> {/* Disable the button when loading */}
+                        {loading ? (
+                            <div className='w-6 h-6 border-2 border-blue-600 rounded-full border-solid animate-spin'></div>
+                        ) : (
+                            'Sign In'
+                        )}
+                    </Button>                    <div className="flex flex-col items-center text-center font-semibold gap-3">
                         <Link className='hover:underline hover:text-blue-600 transition-colors duration-200' href='/forgot-password'>Forgot Your Password?</Link>
                         <Link className='hover:underline hover:text-blue-600 transition-colors duration-200' href='/signup'>Don{"'"}t have an account?</Link>
                     </div>

@@ -16,7 +16,7 @@ interface SingleQuizProps {
 const SingleQuiz: React.FC<SingleQuizProps> = ({ quizId, title, image, category, subCategory, difficulty, duration, rating }) => {
     return (
         <Link href={`/quiz/${quizId}`}>
-            <div className='w-72 border border-gray-300 bg-white p-4 rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300'>
+            <div className='w-72 p-4 rounded-3xl border-2 border-dark/30 dark:border-main/50 shadow-xl hover:shadow-lg transform hover:scale-105 transition-transform duration-300'>
                 <div className='relative w-full h-40 mb-4'>
                     <Image
                         src={image}
@@ -26,11 +26,11 @@ const SingleQuiz: React.FC<SingleQuizProps> = ({ quizId, title, image, category,
                         className='rounded-t-xl'
                     />
                 </div>
-                <p className='text-xl font-extrabold mb-2 text-gray-800'>{title}</p>
-                <p className='text-sm text-gray-600 mb-2'>Quiz Category: {category}</p>
-                <p className='text-sm text-gray-600 mb-2'>Sub Category: {subCategory}</p>
-                <p className='text-sm text-gray-600 mb-2'>Difficulty: {difficulty}</p>
-                <p className='text-sm text-gray-600 mb-2'>Duration: {duration} mins</p>
+                <p className='text-xl font-extrabold mb-2 text-dark dark:text-main'>{title}</p>
+                <p className='text-sm text-dark dark:text-main mb-2'>Category: {category}</p>
+                <p className='text-sm text-dark dark:text-main mb-2'>Sub Category: {subCategory}</p>
+                <p className='text-sm text-dark dark:text-main mb-2'>Difficulty: {difficulty}</p>
+                <p className='text-sm text-dark dark:text-main mb-2'>Duration: {duration} mins</p>
             </div>
         </Link>
     );

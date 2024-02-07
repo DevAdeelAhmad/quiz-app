@@ -27,9 +27,7 @@ const AllCategoriesPage = () => {
     <main className="min-h-screen w-full flex">
       <Sidebar />
       <div className="flex flex-col gap-5 py-10 min-h-screen items-center w-full">
-        <h1 className="text-2xl lg:text-3xl font-semibold">
-          All Quiz Categories
-        </h1>
+        <h1 className="text-2xl lg:text-3xl font-semibold">All Categories</h1>
         {categories && categories.length > 0 ? (
           <div className="flex flex-wrap gap-5 items-center justify-center">
             {categories.map((category, index) => (

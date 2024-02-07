@@ -13,7 +13,7 @@ export default function ResultCard({quiz,totalScore,obtainedScore,message}:Resul
 
 
   return (
-    <Card className="mx-20 w-[90%] h-[70%] rounded-3xl min-h-36 shadow-2xl">
+    <Card className="lg:mx-20 w-[90%] h-[70%] mb-16 rounded-3xl bg-main dark:bg-dark text-dark dark:text-main border-dark dark:border-main min-h-36 shadow-2xl">
       
             <h2 className="text-2xl my-20 text-center font-bold uppercase leading-none">
                {obtainedScore} out of {totalScore}

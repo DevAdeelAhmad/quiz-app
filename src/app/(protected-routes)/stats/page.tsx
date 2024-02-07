@@ -7,7 +7,7 @@ const StatisticsPage = () => {
   return (
     <main className="flex min-h-screen w-full">
       <Sidebar />
-      <div className="flex items-center justify-center w-full">
+      <div className="flex justify-center w-full">
         <QuizzesStats />
       </div>
     </main>

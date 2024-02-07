@@ -11,7 +11,7 @@ const firebaseConfig = {
   storageBucket: "quiz-nextjs-6cf08.appspot.com",
   messagingSenderId: "71412361004",
   appId: "1:71412361004:web:91c0d363126220a83b2e89",
-  measurementId: "G-TY8J089JTP",
+  measurementId: "G-TY8J089JTP"
 };
 
 export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);

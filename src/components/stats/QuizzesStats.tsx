@@ -2,38 +2,41 @@ import React, { useMemo, useEffect, useState } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
 import {
   QuizWithCategory,
-  QuizSubmittionWithQuizAndCategory,
+  QuizSubmissionWithQuizAndCategory,
 } from "@/lib/interfaces";
 import { getQuizzes } from "@/lib/getPublicQuizzes";
 import getCategories from "@/lib/getCategories";
 import { getQuizSubmittionsByUserId } from "@/lib/getQuizSubmittions";
 import { UserAuth } from "@/context/AuthContext";
-import { Chart, ArcElement } from "chart.js";
+import { ArcElement, CategoryScale } from "chart.js";
+import Chart from "chart.js/auto";
+import { getFeaturedQuizzes } from "@/lib/getFeaturedQuizzes";
+Chart.register(CategoryScale);
 Chart.register(ArcElement);
 
 const QuizzesStats: React.FC = () => {
   const { user } = UserAuth();
   const [myQuizzes, setMyQuizzes] = useState<QuizWithCategory[]>([]);
   const [mySubmittions, setMySubmittions] = useState<
-    QuizSubmittionWithQuizAndCategory[]
+    QuizSubmissionWithQuizAndCategory[]
   >([]);
   const [allQuizzes, setAllQuizzes] = useState<QuizWithCategory[]>([]);
 
   useEffect(() => {
     const fetchQuizzesAndCategories = async () => {
       let fetchedQuizzes = await getQuizzes();
+      let fetchFeaturedQuizzes = await getFeaturedQuizzes();
+      let allQuizes = [...fetchFeaturedQuizzes, ...fetchedQuizzes];
       const categoriesData = await getCategories();
-      const quizzesWithCategory: QuizWithCategory[] = fetchedQuizzes.map(
-        (quiz) => {
-          const category = categoriesData.find(
-            (cat) => cat.name === quiz.quizCategory
-          );
-          return {
-            ...quiz,
-            categoryImage: category?.imageUrl || "",
-          };
-        }
-      );
+      const quizzesWithCategory: QuizWithCategory[] = allQuizes.map((quiz) => {
+        const category = categoriesData.find(
+          (cat) => cat.name === quiz.quizCategory
+        );
+        return {
+          ...quiz,
+          categoryImage: category?.imageUrl || "",
+        };
+      });
       setAllQuizzes(quizzesWithCategory);
       if (user) {
         const filteredQuizzes = quizzesWithCategory.filter((quiz) =>
@@ -63,7 +66,7 @@ const QuizzesStats: React.FC = () => {
     user && fetchSubmitions(user.uid);
   }, [allQuizzes, user]);
 
-  const getTotalMarks = (quizzes: QuizSubmittionWithQuizAndCategory[]) => {
+  const getTotalMarks = (quizzes: QuizSubmissionWithQuizAndCategory[]) => {
     return quizzes.reduce(
       (total, quiz) => total + (quiz.obtainedScore || 0),
       0
@@ -140,7 +143,7 @@ const QuizzesStats: React.FC = () => {
       <div className="flex flex-row justify-center items-start gap-16">
         <div>
           <h2 className="text-lg font-semibold mb-2">
-            Attempted vs Unattempted Quizzes
+            Accessible vs Unattempted Quizzes
           </h2>
           <div className="h-80 flex items-center justify-center">
             <Doughnut
@@ -148,11 +151,6 @@ const QuizzesStats: React.FC = () => {
               data={doughnutChartData}
               options={doughnutOptions}
             />
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-semibold">
-              Total Marks: {getTotalMarks(mySubmittions)}
-            </p>
           </div>
         </div>
         <div>

@@ -7,7 +7,7 @@ const ResultsPage = () => {
     return (
         <main className='flex min-h-screen w-full'>
             <Sidebar />
-            <div className='flex items-center justify-center w-full'>
+            <div className='flex justify-center w-full'>
                 <ResultCards />
             </div>
         </main>

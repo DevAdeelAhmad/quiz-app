@@ -57,12 +57,12 @@ const Sidebar = () => {
         </SheetContent>
       </Sheet>
       <aside
-        className={`hidden lg:block border-r border-r-gray-300 sticky h-screen p-5 pt-14 top-0 bottom-0 left-0 duration-300 ${
+        className={`hidden lg:block border-r border-r-dark dark:border-r-main sticky h-screen p-5 pt-14 top-0 bottom-0 left-0 duration-300 ${
           open ? "w-36" : "w-16"
         }`}
       >
         <BsArrowLeftShort
-          className={`text-black border-l-2 border-l-black bg-white text-3xl rounded-full cursor-pointer absolute -right-[14px] top-9 transition-all duration-300 ${
+          className={`text-black dark:text-white bg-background border-l-2 border-l-black dark:border-l-white text-3xl rounded-full cursor-pointer absolute -right-[14px] top-9 transition-all duration-300 ${
             !open && "rotate-180"
           }`}
           onClick={handleSidebar}

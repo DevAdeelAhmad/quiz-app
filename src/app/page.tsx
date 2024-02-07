@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex">
       <Sidebar />
-      <div className="flex flex-col min-h-screen w-full items-center">
+      <div className="flex flex-col min-h-screen w-full items-center lg:ml-[-65px]">
         <FeaturedQuizzes />
         <QuizCategories />
         <MyQuizzes />

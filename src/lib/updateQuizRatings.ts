@@ -14,8 +14,8 @@ export const updateQuizRatings= async(quiz:Quiz,rating:number)=>{
     const newRatings=(prevRatings+rating)/2
 
     try {
-        const quizzesRef: DatabaseReference = ref(database, "quizzes");
-        const snapshot = await get(child(quizzesRef, '/'));
+      const quizzesRef: DatabaseReference = ref(database, `${quiz.userId === 'featured' ? 'featured' : 'quizzes'}`);
+      const snapshot = await get(child(quizzesRef, '/'));
     
         if (snapshot.exists()) {
           const quizzesData = snapshot.val(); 

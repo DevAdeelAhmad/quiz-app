@@ -170,9 +170,9 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({ onBack, onSubmit }) => {
             <div className="w-full flex flex-wrap items-center justify-center gap-5">
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button type='submit' disabled={questions.length <= 0} className='text-white font-semibold !max-w-[100px] py-2'>Submit</Button>
+                        <Button type='submit' disabled={questions.length <= 0} className='bg-dark dark:bg-main text-main dark:text-dark font-semibold !max-w-[100px] py-2'>Submit</Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="max-sm:max-w-[280px] rounded-xl">
+                    <AlertDialogContent className="max-sm:max-w-[280px] rounded-xl border-dark dark:border-main">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -181,7 +181,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({ onBack, onSubmit }) => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={(e) => {
+                            <AlertDialogAction onClick={(e: any) => {
                                 e.preventDefault();
                                 handleSubmit();
                             }}>
