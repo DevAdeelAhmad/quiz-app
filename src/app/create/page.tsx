@@ -17,6 +17,7 @@ const QuizCreationPage = () => {
     const [step, setStep] = useState<number>(1);
     const [quizCreationFormData, setQuizCreationFormData] = useState<any>({});
     const [questionData, setQuestionData] = useState<any>({});
+    const [quizId, setQuizId] = useState<string>('');
     const handleContinue = () => {
         setStep(step + 1);
     };
@@ -28,6 +29,7 @@ const QuizCreationPage = () => {
     const handleQuizQuestionsSubmit = async (questions: any) => {
         setQuestionData(questions);
         const quizId = uuidv4();
+        setQuizId(quizId);
         const mergedData = {
             quizId,
             quizTitle: quizCreationFormData.quizTitle,
@@ -86,7 +88,7 @@ const QuizCreationPage = () => {
                         <QuizQuestions onSubmit={handleQuizQuestionsSubmit} onBack={handleQuizQuestionsBack} />
                     )}
                     {step === 3 && (
-                        <QuizCreationComplete />
+                        <QuizCreationComplete quizId={quizId} />
                     )}
                 </div>
             </main>

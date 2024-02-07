@@ -10,7 +10,17 @@ export interface Quiz {
     quizTags: string[];
     quizTitle: string;
     quizVisibility: string;
-    quizRating: number
+    quizRating: number,
+    accessEmails:String[] | null
+  }
+  export interface QuizSubmittion {
+    quizId: string;
+    message:string,
+    obtainedScore:number,
+    totalScore:number,
+    userEmail:string,
+    userId:string,
+    selectedAnswers:object
   }
   
 export interface QuizQuestion {
@@ -20,3 +30,17 @@ export interface QuizQuestion {
     question: string;
   }
   
+export interface Category {
+    id: string;
+    categoryLink: string;
+    imageUrl: string;
+    name: string;
+}
+
+export interface QuizWithCategory extends Quiz {
+    categoryImage: string;
+}
+
+  export interface QuizSubmittionWithQuizAndCategory extends QuizSubmittion, QuizWithCategory{
+    
+  }

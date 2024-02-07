@@ -1,5 +1,6 @@
 "use client"
 import Sidebar from '@/components/commons/Sidebar';
+import { UserAuth } from '@/context/AuthContext';
 import Filters from '@/components/search/Filters';
 import SearchResults from '@/components/search/SearchResults';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,7 @@ interface QuizWithCategory extends Quiz {
     categoryImage: string;
 }
 const SearchPage = () => {
+    const { user } = UserAuth();
     const [quizzes, setQuizzes] = useState<QuizWithCategory[]>([]);
     const [filteredQuizzes, setFilteredQuizzes] = useState<QuizWithCategory[]>([]);
     const [categories, setCategories] = useState<Category[] | null>(null);
@@ -32,7 +34,10 @@ const SearchPage = () => {
 
     useEffect(() => {
         const fetchQuizzesAndCategories = async () => {
-            const fetchedQuizzes: Quiz[] = await getQuizzes(); // Update this function to exclude private quizzes
+            let fetchedQuizzes: Quiz[] = await getQuizzes();
+            if(user){
+                fetchedQuizzes = fetchedQuizzes.filter(quiz => quiz?.accessEmails?.includes(user?.email));
+            }
             const categoriesData = await getCategories();
             const quizzesWithCategory: QuizWithCategory[] = fetchedQuizzes.map((quiz) => {
                 const category = categoriesData.find((cat) => cat.name === quiz.quizCategory);
@@ -46,7 +51,7 @@ const SearchPage = () => {
             setCategories(categoriesData);
         };
         fetchQuizzesAndCategories();
-    }, []);
+    }, [user]);
 
     const handleSearch = (value: string) => {
         setSearchTerm(value);

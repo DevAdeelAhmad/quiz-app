@@ -12,6 +12,7 @@ import { storage } from "./firebase";
 export const updateUserProfile = async (userData: {
   displayName?: string;
   email?: string;
+  photoURL?: string;
 }): Promise<void> => {
   const user = auth.currentUser;
   if (user) {

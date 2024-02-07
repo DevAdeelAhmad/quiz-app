@@ -40,6 +40,8 @@ const SidebarLinks: React.FC<SidebarLinksProps> = ({ currentRoute, textStyle, ha
         <ImStatsDots size={23} />
         <span className={textStyle}>Statistics</span>
       </Link>
+
+      
       <Link className='absolute bottom-24 flex items-center gap-2 cursor-pointer text-third' href={"/profile"}>
         <RiUserSettingsLine size={30} /> <span className={textStyle}>Profile</span>
       </Link>

@@ -15,7 +15,7 @@ const SingleMyQuiz = ({ creatorName, quizName, percentage, quizImageUrl, isFavor
     const [isFavor, setIsFavor] = useState(isFavorite);
     const possible = "!w-[0%] !w-[25%] !w-[50%] !w-[75%] !w-[100%]"
     return (
-        <div className='flex flex-col sm:flex-row gap-4 rounded-3xl border hover:shadow-lg p-3 cursor-pointer relative'>
+        <div className='flex md:flex-col gap-4 rounded-3xl border hover:shadow-lg p-3 cursor-pointer relative'>
             <Image className='rounded-3xl' src={quizImageUrl} width={300} height={300} alt='Quiz Image' />
             <div onClick={() => setIsFavor(!isFavor)} className='border-black border bg-white p-2 rounded-full duration-300 transition-all absolute top-2 right-2 cursor-pointer'>
                 {isFavor ? <FaBookmark className=' text-black' /> : <FaRegBookmark className=' text-black' />}

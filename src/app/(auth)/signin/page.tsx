@@ -43,6 +43,7 @@ const SignInPage = () => {
                 description: "Sign in Success!",
                 variant: "success"
             })
+            router.push('/');
         } catch (error: any) {
             if (error.code === 'auth/invalid-credential') {
                 setErrorMessage('Wrong email or password entered.');

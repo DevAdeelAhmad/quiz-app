@@ -34,10 +34,11 @@ const ProfileTab = () => {
       await updateUserProfile({
         displayName,
         email,
+        photoURL:image
       });
 
       const updatedUser = auth.currentUser;
-
+      
       // Update the image only if it exists in the updated user data
       const updatedImage = updatedUser?.photoURL || '/assets/default-profile.png';
       setImage(updatedImage);

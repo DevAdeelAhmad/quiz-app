@@ -8,14 +8,20 @@ import {
 } from "firebase/database";
 import { Quiz, QuizQuestion } from "@/lib/interfaces";
 
-export const getQuizzes = async (visiblityType: string | null = null): Promise<Quiz[]> => {
+export const getQuizById = async (quizId: string): Promise<Quiz|null> => {
   try {
     const quizzesRef: DatabaseReference = ref(database, "quizzes");
-    const snapshot = await get(child(quizzesRef, "/"));
+    const snapshot = await get(child(quizzesRef, '/'));
 
     if (snapshot.exists()) {
-      const quizzes: Quiz[] = Object.entries(snapshot.val()).map(
-        ([quizId, quizData]: [string, any]) => {
+      const quizzesData = snapshot.val(); 
+      // Find the quiz with the specified quizId
+        const quizEntry = Object.entries(quizzesData).find(
+          ([_, quizData]: [string, any]) => quizData.quizId === quizId
+        );
+
+        if (quizEntry) {
+          const [_, quizData]: [string, any] = quizEntry;
           const quiz: Quiz = {
             quizId: quizData.quizId,
             quizCategory: quizData.quizCategory,
@@ -29,25 +35,20 @@ export const getQuizzes = async (visiblityType: string | null = null): Promise<Q
             quizVisibility: quizData.quizVisibility,
             categoryImage: "",
             accessEmails:quizData.accessEmails,
-            quizRating: quizData.quizRating,
+            quizRating: quizData.quizRating
           };
           return quiz;
         }
-      );
-      if(visiblityType)
-      {
-        const filteredQuizzes = quizzes.filter(
-          (quiz) => quiz.quizVisibility === visiblityType
-        );
-        return filteredQuizzes;
-      }
-      return quizzes;
+        else {
+          console.error("No quiz found in the database against this Id.");
+          return null;
+        }
     } else {
-      console.error("No quizzes found in the database.");
-      return [];
+      console.error("No quiz found in the database");
+      return null;
     }
   } catch (error) {
-    console.error("Error fetching quizzes:", (error as Error).message);
+    console.error("Error fetching quiz.", (error as Error).message);
     throw error;
   }
 };

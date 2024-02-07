@@ -1,15 +1,17 @@
-import Sidebar from '@/components/commons/Sidebar'
-import React from 'react'
+"use client";
+import Sidebar from "@/components/commons/Sidebar";
+import QuizzesStats from "@/components/stats/QuizzesStats";
+import React from "react";
 
 const StatisticsPage = () => {
-    return (
-        <main className='flex min-h-screen w-full'>
-            <Sidebar />
-            <div className='flex items-center justify-center w-full'>
-                <h1 className='text-2xl lg:text-3xl font-semibold'>Stats Page</h1>
-            </div>
-        </main>
-    )
-}
+  return (
+    <main className="flex min-h-screen w-full">
+      <Sidebar />
+      <div className="flex items-center justify-center w-full">
+        <QuizzesStats />
+      </div>
+    </main>
+  );
+};
 
-export default StatisticsPage
+export default StatisticsPage;

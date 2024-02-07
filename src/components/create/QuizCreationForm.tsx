@@ -111,7 +111,7 @@ const QuizCreationForm: React.FC<QuizCreationFormProps> = ({
         e: React.KeyboardEvent<HTMLInputElement>,
         inputType: string
     ) => {
-        if (e.key === "Enter") {
+        if (e.key === " ") {
             e.preventDefault();
             const value = e.currentTarget.value;
             if (value.trim().length > 0) {

@@ -1,4 +1,6 @@
+"use client"
 import Sidebar from '@/components/commons/Sidebar'
+import ResultCards from '@/components/results/ResultCards'
 import React from 'react'
 
 const ResultsPage = () => {
@@ -6,7 +8,7 @@ const ResultsPage = () => {
         <main className='flex min-h-screen w-full'>
             <Sidebar />
             <div className='flex items-center justify-center w-full'>
-                <h1 className='text-2xl lg:text-3xl font-semibold'>Results Page</h1>
+                <ResultCards />
             </div>
         </main>
     )

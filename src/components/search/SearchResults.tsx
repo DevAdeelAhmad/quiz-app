@@ -13,7 +13,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ quizzes }) => {
                 <p>No results found.</p>
             ) : (
                 quizzes.map((quiz, index) => (
-                    <SingleQuiz key={index} title={quiz.quizTitle} image={quiz.categoryImage} category={quiz.quizCategory} subCategory={quiz.quizSubCategory} difficulty={quiz.quizDifficulty} duration={quiz.quizDuration} />
+                    <SingleQuiz key={index} quizId={quiz.quizId} title={quiz.quizTitle} image={quiz.categoryImage} category={quiz.quizCategory} subCategory={quiz.quizSubCategory} difficulty={quiz.quizDifficulty} duration={quiz.quizDuration} rating={quiz.quizRating}/>
                 ))
             )}
         </div>
