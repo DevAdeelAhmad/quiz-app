@@ -8,6 +8,7 @@ import getCategories from "@/lib/getCategories";
 import { getQuizzes } from "@/lib/getPublicQuizzes";
 import { Quiz } from "@/lib/interfaces";
 import { useEffect, useState } from "react";
+import { getFeaturedQuizzes } from "@/lib/getFeaturedQuizzes";
 
 interface Category {
   id: string;
@@ -36,31 +37,30 @@ const SearchPage = () => {
 
   useEffect(() => {
     const fetchQuizzesAndCategories = async () => {
-      let fetchedQuizzes: Quiz[] = await getQuizzes();
+      const allQuizzes: Quiz[] = await getQuizzes();
+      const featuredQuizzes: Quiz[] = await getFeaturedQuizzes();
+      const fetchedQuizzes: Quiz[] = [...allQuizzes, ...featuredQuizzes];
       if (user) {
-        fetchedQuizzes = fetchedQuizzes.filter((quiz) =>
-          quiz?.accessEmails?.includes(user?.email)
+        const userPrivateQuizzes = fetchedQuizzes.filter(
+          (quiz) =>
+            quiz.quizVisibility === "Private" &&
+            quiz.accessEmails?.includes(user.email)
         );
+        setQuizzes(userPrivateQuizzes);
+        setFilteredQuizzes(userPrivateQuizzes);
+      } else {
+        const publicAndFeaturedQuizzes = fetchedQuizzes.filter(
+          (quiz) => quiz.quizVisibility === "Public" || quiz.isFeatured
+        );
+        setQuizzes(publicAndFeaturedQuizzes);
+        setFilteredQuizzes(publicAndFeaturedQuizzes);
       }
       const categoriesData = await getCategories();
-      const quizzesWithCategory: QuizWithCategory[] = fetchedQuizzes.map(
-        (quiz) => {
-          const category = categoriesData.find(
-            (cat) => cat.name === quiz.quizCategory
-          );
-          return {
-            ...quiz,
-            categoryImage: category?.imageUrl || "",
-          };
-        }
-      );
-      setQuizzes(quizzesWithCategory);
-      setFilteredQuizzes(quizzesWithCategory);
       setCategories(categoriesData);
     };
+
     fetchQuizzesAndCategories();
   }, [user]);
-
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     const filtered = quizzes.filter(
@@ -101,11 +101,11 @@ const SearchPage = () => {
         const difficultyFilter =
           !filtersToApply.difficulty ||
           quiz1.quizDifficulty.toLowerCase() ===
-            filtersToApply.difficulty.toLowerCase();
+          filtersToApply.difficulty.toLowerCase();
         const categoryFilter =
           !filtersToApply.category ||
           quiz1.quizCategory.toLowerCase() ===
-            filtersToApply.category.toLowerCase();
+          filtersToApply.category.toLowerCase();
         const ratingFilter =
           filtersToApply.rating === null ||
           quiz1.quizRating === parseInt(filtersToApply.rating, 10);

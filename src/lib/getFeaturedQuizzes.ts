@@ -1,3 +1,5 @@
+// getFeaturedQuizzes.ts
+
 import { database } from "@/lib/firebase";
 import {
   ref,
@@ -28,20 +30,21 @@ export const getFeaturedQuizzes = async (): Promise<Quiz[]> => {
             quizTitle: quizData.quizTitle,
             quizVisibility: quizData.quizVisibility,
             categoryImage: "",
-            accessEmails:quizData.accessEmails,
+            accessEmails: quizData.accessEmails,
             quizRating: quizData.quizRating,
             userId: quizData.userId,
+            isFeatured: true,
           };
           return quiz;
         }
       );
       return quizzes;
     } else {
-      console.error("No quizzes found in the database.");
+      console.error("No quizzes found in the featured database.");
       return [];
     }
   } catch (error) {
-    console.error("Error fetching quizzes:", (error as Error).message);
+    console.error("Error fetching featured quizzes:", (error as Error).message);
     throw error;
   }
 };

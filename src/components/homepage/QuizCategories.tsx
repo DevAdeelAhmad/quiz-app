@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
-import Link from "next/link";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "../ui/button";
-import { GrFormNextLink } from "react-icons/gr";
 import { CategoryData } from "@/lib/tempData";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { GrFormNextLink, GrNext, GrPrevious } from "react-icons/gr";
+import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Button } from "../ui/button";
 
 const QuizCategories = () => {
   const [width, setWidth] = useState<number | undefined>(0);
@@ -25,6 +24,19 @@ const QuizCategories = () => {
       };
     }
   }, []);
+  const prevCard = () => {
+    if (swiperRef.current) {
+      //@ts-ignore
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
+
+  const nextCard = () => {
+    if (swiperRef.current) {
+      //@ts-ignore
+      swiperRef.current.swiper.slideNext();
+    }
+  };
 
   return (
     <section className="flex  flex-col gap-5 p-5 lg:p-10 items-center justify-center w-full">
@@ -45,7 +57,7 @@ const QuizCategories = () => {
           {width ? (
             <Swiper
               spaceBetween={width >= 1024 ? 20 : 10}
-              slidesPerView={width >= 1024 ? 5 : width >= 768 ? 3 : 1}
+              slidesPerView={width >= 1024 ? 5 : width >= 768 ? 3 : 2}
               className="max-w-7xl"
               style={{ padding: "17px" }}
               direction="horizontal"
@@ -78,6 +90,18 @@ const QuizCategories = () => {
               ))}
             </Swiper>
           ) : null}
+        </div>
+        <div
+          onClick={nextCard}
+          className="flex absolute right-[-4%] sm:right-[1%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
+        >
+          <GrNext />
+        </div>
+        <div
+          onClick={prevCard}
+          className="flex absolute left-[-4%] sm:left-[1%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
+        >
+          <GrPrevious />
         </div>
       </div>
     </section>

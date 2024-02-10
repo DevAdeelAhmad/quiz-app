@@ -13,6 +13,7 @@ export interface Quiz {
   quizRating: number;
   accessEmails: string[] | null;
   userId?: string;
+  isFeatured?: boolean;
 }
 
 export interface QuizSubmission {

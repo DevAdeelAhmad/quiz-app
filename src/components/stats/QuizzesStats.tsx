@@ -140,7 +140,7 @@ const QuizzesStats: React.FC = () => {
       <h1 className="text-2xl font-bold text-center mb-10">
         Quizzes Statistics
       </h1>
-      <div className="flex flex-row justify-center items-start gap-16">
+      <div className="flex flex-col md:flex-row justify-center items-center gap-16">
         <div>
           <h2 className="text-lg font-semibold mb-2">
             Accessible vs Unattempted Quizzes

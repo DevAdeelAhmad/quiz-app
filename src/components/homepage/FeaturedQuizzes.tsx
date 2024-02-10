@@ -78,7 +78,7 @@ const FeaturedQuizzes = () => {
       <div className="flex w-full items-center justify-center relative">
         <div className="flex justify-center items-center w-full lg:pl-20">
           <Swiper
-            spaceBetween={10}
+            spaceBetween={20}
             slidesPerView={getSlidesPerView()}
             className="max-w-7xl"
             style={{ padding: "17px" }}
@@ -118,13 +118,13 @@ const FeaturedQuizzes = () => {
         </div>
         <div
           onClick={nextCard}
-          className="hidden sm:flex absolute right-[1%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
+          className="flex absolute right-[-4%] sm:right-[1%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
         >
           <GrNext />
         </div>
         <div
           onClick={prevCard}
-          className="hidden sm:flex absolute left-[1%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
+          className="flex absolute left-[-4%] sm:left-[1%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
         >
           <GrPrevious />
         </div>

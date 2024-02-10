@@ -40,13 +40,13 @@ const Sidebar = () => {
   return (
     <>
       <Sheet>
-        <SheetTrigger>
+        <SheetTrigger className="z-[1999]">
           <MdOutlineMenuOpen
             size={35}
             className="absolute top-4 right-5 cursor-pointer block lg:hidden text-first"
           />
         </SheetTrigger>
-        <SheetContent className="w-[200px]">
+        <SheetContent className="w-[200px] z-[2000]">
           <SidebarLinks
             currentRoute={currentRoute}
             textStyle={"font-semibold"}
@@ -57,7 +57,7 @@ const Sidebar = () => {
         </SheetContent>
       </Sheet>
       <aside
-        className={`hidden lg:block border-r border-r-dark dark:border-r-main sticky h-screen p-5 pt-14 top-0 bottom-0 left-0 duration-300 ${
+        className={`hidden lg:block border-r border-r-dark dark:border-r-main sticky h-screen p-5 pt-14 top-0 bottom-0 left-0 duration-300 z-[2000] ${
           open ? "w-36" : "w-16"
         }`}
       >

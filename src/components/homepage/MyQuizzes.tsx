@@ -155,11 +155,11 @@ const MyQuizzes = () => {
             </Swiper>
           ) : user && mySubmissions.length <= 0 ? (
             <span className=" text-dark dark:text-main text-lg font-bold lg:-ml-20">
-              You don{"'"}t have any submitted quiz !
+              You don{"'"}t have any submitted quiz!
             </span>
           ) : (
             <span className="font-bold text-lg text-dark dark:text-main lg:-ml-20">
-              You are not logged in !
+              Kindly login to see your attempted quizzes!
             </span>
           )}
         </div>
@@ -167,13 +167,13 @@ const MyQuizzes = () => {
           <>
             <div
               onClick={nextCard}
-              className="hidden sm:flex absolute right-[3%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-3 cursor-pointer"
+              className="flex absolute right-[-4%] sm:right-[1%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
             >
               <GrNext />
             </div>
             <div
               onClick={prevCard}
-              className="hidden sm:flex absolute left-[3%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-3 cursor-pointer"
+              className="flex absolute left-[-4%] sm:left-[1%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
             >
               <GrPrevious />
             </div>
