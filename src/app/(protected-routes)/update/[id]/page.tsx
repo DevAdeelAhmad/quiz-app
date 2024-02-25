@@ -27,6 +27,7 @@ const UpdatePage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const getData = async () => {
       const quizData = await getQuizById(params.id);
+      //@ts-ignore
       setData(quizData);
       console.log(quizData);
     };

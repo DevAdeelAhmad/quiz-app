@@ -69,6 +69,7 @@ const QuizzesStats: React.FC = () => {
 
   const getTotalMarks = (quizzes: QuizSubmissionWithQuizAndCategory[]) => {
     return quizzes.reduce(
+      //@ts-ignore
       (total, quiz) => total + (quiz.obtainedScore || 0),
       0
     );

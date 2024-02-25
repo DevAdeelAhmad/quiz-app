@@ -130,7 +130,9 @@ const QuizTab = () => {
                   subCategory={submission.quizSubCategory}
                   difficulty={submission.quizDifficulty}
                   duration={submission.quizDuration}
+                  //@ts-ignore
                   totalScore={submission.totalScore}
+                  //@ts-ignore
                   obtainedScore={submission.obtainedScore}
                   type={submission.userId ?? ""}
                 />

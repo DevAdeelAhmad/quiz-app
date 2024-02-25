@@ -18,12 +18,19 @@ export interface Quiz {
 
 export interface QuizSubmission {
   [x: string]: never[];
+  //@ts-ignore
   quizId: string;
+  //@ts-ignore
   message: string;
+  //@ts-ignore
   obtainedScore: number;
+  //@ts-ignore
   totalScore: number;
+  //@ts-ignore
   userEmail: string;
+  //@ts-ignore
   userId: string;
+  //@ts-ignore
   selectedAnswers: object;
 }
 
@@ -44,9 +51,10 @@ export interface Category {
 export interface QuizWithCategory extends Quiz {
   categoryImage: string;
 }
-
+//@ts-ignore
 export interface QuizSubmissionWithQuizAndCategory
-  extends Omit<QuizSubmission, "userId">,
-    QuizWithCategory {
+extends Omit<QuizSubmission, "userId">,
+QuizWithCategory {
+      //@ts-ignore
   userId?: string;
 }

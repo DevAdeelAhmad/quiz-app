@@ -1,4 +1,3 @@
-"use client";
 import Sidebar from "@/components/commons/Sidebar";
 import ResultCards from "@/components/results/ResultCards";
 import React from "react";

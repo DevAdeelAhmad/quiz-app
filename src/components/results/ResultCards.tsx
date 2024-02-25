@@ -1,19 +1,16 @@
 "use client";
-import { useClerk } from "@clerk/nextjs";
-import getCategories from "@/lib/getCategories";
-import { getQuizzes } from "@/lib/getPublicQuizzes";
 import { getQuizSubmissionsByUserId } from "@/lib/getQuizSubmissions";
 import {
-  Quiz,
   QuizSubmissionWithQuizAndCategory,
-  QuizWithCategory,
+  QuizWithCategory
 } from "@/lib/interfaces";
+import { useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { GrFormNextLink } from "react-icons/gr";
 import SingleSubmittionCard from "../profile/SingleSubmissionCard";
-import { Button } from "../ui/button";
 import SkeletonCard from "../search/SkeletonCard";
+import { Button } from "../ui/button";
 
 const ResultCards = () => {
   const { user } = useClerk();
@@ -29,32 +26,6 @@ const ResultCards = () => {
     setIsMounted(true);
   }, []);
 
-  // useEffect(() => {
-  //   const fetchQuizzesAndCategories = async () => {
-  //     const categoriesData = await getCategories();
-  //     setCategories(categoriesData);
-  //     const quizzesWithCategory: QuizWithCategory[] = fetchedQuizzes.map(
-  //       (quiz) => {
-  //         const category = categoriesData.find(
-  //           (cat) => cat.name === quiz.quizCategory
-  //         );
-  //         return {
-  //           ...quiz,
-  //           categoryImage: category?.imageUrl || "",
-  //         };
-  //       }
-  //     );
-  //     setAllQuizzes(quizzesWithCategory);
-  //     if (user) {
-  //       const filteredQuizzes = quizzesWithCategory.filter((quiz) =>
-  //         quiz?.accessEmails?.includes(user?.emailAddresses[0].toString())
-  //       );
-  //       setMyQuizzes(filteredQuizzes);
-  //     }
-  //   };
-  //   fetchQuizzesAndCategories();
-  // }, [user]);
-
   useEffect(() => {
     const fetchSubmittions = async (userId: string) => {
       const submittions = await getQuizSubmissionsByUserId(userId);
@@ -68,14 +39,13 @@ const ResultCards = () => {
             ...quiz,
           };
         });
-
+        //@ts-ignore
         setMySubmittions(submittionsWithQuizzes);
       }
     };
 
     user && fetchSubmittions(user.id);
   }, [user, allQuizzes]);
-  console.log("SFKHSDFSDFKNDSKFNDSKJF", mySubmittions);
   return (
     <>
       {isMounted ? (
@@ -103,7 +73,9 @@ const ResultCards = () => {
                   image={submittion.categoryImage}
                   difficulty={submittion.quizDifficulty}
                   duration={submittion.quizDuration}
+                  //@ts-ignore
                   totalScore={submittion.totalScore}
+                  //@ts-ignore
                   obtainedScore={submittion.obtainedScore}
                 />
               ))}

@@ -140,10 +140,15 @@ const FeaturedQuizzes = () => {
           </div>
         </section>
       ) : (
-        <div className="flex mt-6 justify-between gap-x-4 mx-3">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
+        <div className="flex flex-col mt-6 justify-between gap-x-4 mx-3">
+          <h1 className="text-2xl lg:text-3xl font-semibold text-center">
+            Featured Quizzes
+          </h1>
+          <div className="flex items-center justify-center gap-4 flex-wrap w-full">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
         </div>
       )}
     </>
