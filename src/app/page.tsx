@@ -1,14 +1,15 @@
 "use client";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useClerk } from "@clerk/clerk-react";
 import Sidebar from "@/components/commons/Sidebar";
 import FeaturedQuizzes from "@/components/homepage/FeaturedQuizzes";
 import MyQuizzes from "@/components/homepage/MyQuizzes";
 import QuizCategories from "@/components/homepage/QuizCategories";
-import { UserAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { LampContainer } from "../components/lamp";
+
 export default function Home() {
-  const { user } = UserAuth();
+  const clerk = useClerk();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,12 +18,12 @@ export default function Home() {
       setLoading(false);
     };
     checkAuthentication();
-  }, [user]);
+  }, [clerk]);
 
   return (
     <main className="min-h-screen w-full flex">
       <Sidebar />
-      <div className="flex flex-col min-h-screen w-full items-center lg:ml-[-65px]">
+      <div className="flex flex-col min-h-screen w-full items-center">
         <LampContainer>
           <motion.h1
             initial={{ opacity: 0.5, y: 100 }}

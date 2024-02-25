@@ -1,42 +1,23 @@
 "use client";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { UserAuth } from "@/context/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { MdOutlineMenuOpen } from "react-icons/md";
 import SidebarLinks from "./SidebarLinks";
 import { useToast } from "../ui/use-toast";
+import { useClerk } from "@clerk/nextjs";
 
 const Sidebar = () => {
   const { toast } = useToast();
+  const { user } = useClerk();
   const router = useRouter();
   const currentRoute = usePathname();
-  const { signout, user } = UserAuth();
   const [open, setOpen] = useState(false);
   const handleSidebar = () => {
     setOpen(!open);
   };
-  const handleSignOut = async () => {
-    try {
-      await signout();
-      toast({
-        title: "Signed Out!",
-        description: "You have successfully signed out",
-        variant: "success",
-        duration: 3000,
-      });
-    } catch (error) {
-      toast({
-        title: "Error!",
-        description: "Something Went Wrong! Please try again.",
-        variant: "destructive",
-        duration: 3000,
-      });
-    }
-  };
   const textStyle = `font-semibold ${open ? "flex" : "hidden"}`;
-
   return (
     <>
       <Sheet>
@@ -50,7 +31,6 @@ const Sidebar = () => {
           <SidebarLinks
             currentRoute={currentRoute}
             textStyle={"font-semibold"}
-            handleSignOut={handleSignOut}
             routerPush={(path: string) => router.push(path)}
             user={user}
           />
@@ -70,7 +50,6 @@ const Sidebar = () => {
         <SidebarLinks
           currentRoute={currentRoute}
           textStyle={textStyle}
-          handleSignOut={handleSignOut}
           routerPush={(path: string) => router.push(path)}
           user={user}
         />

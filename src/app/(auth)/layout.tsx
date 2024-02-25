@@ -1,10 +1,12 @@
-import RedirectToHomepage from "@/components/RedirectToHomepage";
 import React, { ReactNode } from "react";
-interface AuthLayoutProps {
-  children: ReactNode;
-}
-const AuthLayout = ({ children }: AuthLayoutProps) => {
-  return <RedirectToHomepage>{children}</RedirectToHomepage>;
+import Sidebar from "@/components/commons/Sidebar";
+const AuthLayout = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="min-h-screen w-full flex">
+      <Sidebar />
+      {children}
+    </div>
+  );
 };
 
 export default AuthLayout;

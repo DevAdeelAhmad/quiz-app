@@ -60,7 +60,7 @@ const SingleFeaturedQuiz = ({
             height={50}
             alt="Creator Profile Image"
           />
-          <span className="pr-2 dark:text-dark">{creatorName}</span>
+          <span className="pr-2 text-black font-medium">{creatorName}</span>
         </div>
       </div>
       <span className="text-xl font-extrabold mt-2 text-dark dark:text-main uppercase">

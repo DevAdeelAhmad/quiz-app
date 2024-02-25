@@ -1,19 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/commons/Sidebar";
+import QuizCreationComplete from "@/components/create/QuizCreationComplete";
 import QuizCreationForm from "@/components/create/QuizCreationForm";
 import QuizQuestions from "@/components/create/QuizQuestion";
-import QuizCreationComplete from "@/components/create/QuizCreationComplete";
-import { getDatabase, ref, set, get } from "firebase/database";
-import { v4 as uuidv4 } from "uuid";
-import { UserAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useClerk } from "@clerk/nextjs";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const QuizCreationPage = () => {
-  const router = useRouter();
   const { toast } = useToast();
-  const { user } = UserAuth();
+  const { user } = useClerk();
   const [step, setStep] = useState<number>(1);
   const [quizCreationFormData, setQuizCreationFormData] = useState<any>({});
   const [questionData, setQuestionData] = useState<any>({});
@@ -21,15 +19,18 @@ const QuizCreationPage = () => {
   const handleContinue = () => {
     setStep(step + 1);
   };
+
   const handleQuizFormSubmit = (formData: any) => {
     setQuizCreationFormData(formData);
     console.log("Quiz Creation Form Data:", formData);
     handleContinue();
   };
+
   const handleQuizQuestionsSubmit = async (questions: any) => {
     setQuestionData(questions);
     const quizId = uuidv4();
     setQuizId(quizId);
+
     const mergedData = {
       quizId,
       quizTitle: quizCreationFormData.quizTitle,
@@ -47,29 +48,29 @@ const QuizCreationPage = () => {
       }),
       quizQuestions: questions,
       quizRating: 5,
-      userId: user?.uid || "",
+      userId: user?.id,
     };
-    const quizzesRef = ref(getDatabase(), "quizzes");
-    const existingQuizzes = (await get(quizzesRef)).val() || [];
-    const updatedQuizzes = [...existingQuizzes, mergedData];
-    set(quizzesRef, updatedQuizzes)
-      .then(() => {
-        console.log("Quiz Data added to the database:", mergedData);
-        toast({
-          title: "Success",
-          description: "Quiz created successfully!",
-          variant: "success",
-          duration: 3000,
-        });
-        handleContinue();
-      })
-      .catch((error) => {
-        console.error("Error adding Quiz Data to the database:", error);
+
+    try {
+      const quizDocRef = doc(getFirestore(), "quizzes", quizId);
+      await setDoc(quizDocRef, mergedData);
+      console.log("Quiz Data added to Firestore:", mergedData);
+      toast({
+        title: "Success",
+        description: "Quiz created successfully!",
+        variant: "success",
+        duration: 3000,
       });
+      handleContinue();
+    } catch (error) {
+      console.error("Error adding Quiz Data to Firestore:", error);
+    }
   };
+
   const handleQuizQuestionsBack = () => {
     setStep(1);
   };
+
   return (
     <main className="flex min-h-screen w-full">
       <Sidebar />

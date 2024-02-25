@@ -15,8 +15,7 @@ const Filters: React.FC<FiltersProps> = ({
 }) => {
   return (
     <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-5 w-full mb-4">
-      <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-5 items-center space-x-2">
-        <span className="font-semibold">Filters:</span>
+      <div className="flex flex-wrap justify-center gap-2 items-center space-x-2">
         <select
           value={filters.difficulty || ""}
           onChange={(e) => onFilterChange("difficulty", e.target.value)}

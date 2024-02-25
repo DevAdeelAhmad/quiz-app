@@ -6,16 +6,16 @@ import {
 } from "@/lib/interfaces";
 import { getQuizzes } from "@/lib/getPublicQuizzes";
 import getCategories from "@/lib/getCategories";
-import { getQuizSubmittionsByUserId } from "@/lib/getQuizSubmittions";
-import { UserAuth } from "@/context/AuthContext";
+import { getQuizSubmissionsByUserId } from "@/lib/getQuizSubmissions";
 import { ArcElement, CategoryScale } from "chart.js";
 import Chart from "chart.js/auto";
+import { useClerk } from "@clerk/nextjs";
 import { getFeaturedQuizzes } from "@/lib/getFeaturedQuizzes";
 Chart.register(CategoryScale);
 Chart.register(ArcElement);
 
 const QuizzesStats: React.FC = () => {
-  const { user } = UserAuth();
+  const { user } = useClerk();
   const [myQuizzes, setMyQuizzes] = useState<QuizWithCategory[]>([]);
   const [mySubmittions, setMySubmittions] = useState<
     QuizSubmissionWithQuizAndCategory[]
@@ -40,7 +40,7 @@ const QuizzesStats: React.FC = () => {
       setAllQuizzes(quizzesWithCategory);
       if (user) {
         const filteredQuizzes = quizzesWithCategory.filter((quiz) =>
-          quiz?.accessEmails?.includes(user?.email)
+          quiz?.accessEmails?.includes(user?.emailAddresses[0].toString())
         );
         setMyQuizzes(filteredQuizzes);
       }
@@ -50,7 +50,7 @@ const QuizzesStats: React.FC = () => {
 
   useEffect(() => {
     const fetchSubmitions = async (userId: string) => {
-      const submitions = await getQuizSubmittionsByUserId(userId);
+      const submitions = await getQuizSubmissionsByUserId(userId);
       if (submitions) {
         const submittionsWithQuizes = submitions.map((submition) => {
           const quiz = allQuizzes.find((q) => q.quizId === submition.quizId);
@@ -59,11 +59,12 @@ const QuizzesStats: React.FC = () => {
             ...quiz,
           };
         });
+        //@ts-ignore
         setMySubmittions(submittionsWithQuizes);
       }
     };
 
-    user && fetchSubmitions(user.uid);
+    user && fetchSubmitions(user.id);
   }, [allQuizzes, user]);
 
   const getTotalMarks = (quizzes: QuizSubmissionWithQuizAndCategory[]) => {

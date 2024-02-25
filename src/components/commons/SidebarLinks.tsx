@@ -1,36 +1,24 @@
-import { UserAuth } from "@/context/AuthContext";
+import { UserButton } from "@clerk/nextjs";
+import { UserResource } from "@clerk/types";
 import Link from "next/link";
 import { BiPlus } from "react-icons/bi";
 import { FaList } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { ImStatsDots } from "react-icons/im";
 import { IoSearch } from "react-icons/io5";
-import { VscSignIn, VscSignOut } from "react-icons/vsc";
 import { RiUserSettingsLine } from "react-icons/ri";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { VscSignIn } from "react-icons/vsc";
 import ThemeSwitcher from "./ThemeSwitcher";
 interface SidebarLinksProps {
   currentRoute: string;
   textStyle: string;
-  handleSignOut?: () => void;
   routerPush?: (path: string) => void;
-  user?: typeof UserAuth | null;
+  user?: UserResource | null;
 }
 
 const SidebarLinks: React.FC<SidebarLinksProps> = ({
   currentRoute,
   textStyle,
-  handleSignOut,
   routerPush,
   user,
 }) => {
@@ -99,31 +87,13 @@ const SidebarLinks: React.FC<SidebarLinksProps> = ({
         <span className={textStyle}>Profile</span>
       </Link>
       {user ? (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <div className="absolute bottom-10 flex items-center gap-2 cursor-pointer text-dark dark:text-main">
-              <VscSignOut size={30} />
-              <span className={textStyle}>SignOut</span>
-            </div>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Continuing will log you out from your account.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleSignOut}>
-                Sign Out
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <div className="absolute bottom-10 flex items-center gap-2 cursor-pointer text-third">
+          <UserButton afterSignOutUrl="/" />
+          <span className={textStyle}>Settings</span>
+        </div>
       ) : (
         <Link
-          href={"/signin"}
+          href={"/sign-in"}
           className="absolute bottom-10 flex items-center gap-2 cursor-pointer text-third"
         >
           <VscSignIn size={30} />

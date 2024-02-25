@@ -1,50 +1,38 @@
-import { database } from "@/lib/firebase";
-import {
-  ref,
-  get,
-  child,
-  getDatabase,
-  DatabaseReference,
-} from "firebase/database";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { firestore } from "@/lib/firebase";
 import { Quiz, QuizQuestion } from "@/lib/interfaces";
 
-export const getFeaturedQuizById = async (quizId: string): Promise<Quiz|null> => {
+export const getFeaturedQuizById = async (
+  quizId: string
+): Promise<Quiz | null> => {
   try {
-    const quizzesRef: DatabaseReference = ref(database, "featured");
-    const snapshot = await get(child(quizzesRef, '/'));
+    const quizzesCollection = collection(firestore, "featured");
+    const q = query(quizzesCollection, where("quizId", "==", quizId));
+    const snapshot = await getDocs(q);
 
-    if (snapshot.exists()) {
-      const quizzesData = snapshot.val(); 
-      // Find the quiz with the specified quizId
-        const quizEntry = Object.entries(quizzesData).find(
-          ([_, quizData]: [string, any]) => quizData.quizId === quizId
-        );
+    if (!snapshot.empty) {
+      const doc = snapshot.docs[0];
+      const quizData = doc.data();
 
-        if (quizEntry) {
-          const [_, quizData]: [string, any] = quizEntry;
-          const quiz: Quiz = {
-            quizId: quizData.quizId,
-            quizCategory: quizData.quizCategory,
-            quizDescription: quizData.quizDescription,
-            quizDifficulty: quizData.quizDifficulty,
-            quizDuration: quizData.quizDuration,
-            quizQuestions: quizData.quizQuestions as QuizQuestion[],
-            quizSubCategory: quizData.quizSubCategory,
-            quizTags: quizData.quizTags,
-            quizTitle: quizData.quizTitle,
-            quizVisibility: quizData.quizVisibility,
-            categoryImage: "",
-            accessEmails:quizData.accessEmails,
-            quizRating: quizData.quizRating
-          };
-          return quiz;
-        }
-        else {
-          console.error("No quiz found in the database against this Id.");
-          return null;
-        }
+      const quiz: Quiz = {
+        quizId: quizData.quizId,
+        quizCategory: quizData.quizCategory,
+        quizDescription: quizData.quizDescription,
+        quizDifficulty: quizData.quizDifficulty,
+        quizDuration: quizData.quizDuration,
+        quizQuestions: quizData.quizQuestions as QuizQuestion[],
+        quizSubCategory: quizData.quizSubCategory,
+        quizTags: quizData.quizTags,
+        quizTitle: quizData.quizTitle,
+        quizVisibility: quizData.quizVisibility,
+        categoryImage: "",
+        accessEmails: quizData.accessEmails,
+        quizRating: quizData.quizRating,
+      };
+
+      return quiz;
     } else {
-      console.error("No quiz found in the database");
+      console.error("No quiz found in the database against this Id.");
       return null;
     }
   } catch (error) {

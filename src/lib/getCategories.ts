@@ -1,5 +1,5 @@
-import { database } from "@/lib/firebase";
-import { ref, get } from "firebase/database";
+import { DocumentData, collection, getDocs } from "firebase/firestore";
+import { firestore } from "@/lib/firebase";
 
 interface Category {
   id: string;
@@ -10,18 +10,18 @@ interface Category {
 
 const getCategories = async (): Promise<Category[]> => {
   try {
-    const categoriesRef = ref(database, "categories");
-    const snapshot = await get(categoriesRef);
-    const categoriesData = snapshot.val();
+    const categoriesCollection = collection(firestore, "category");
+    const snapshot = await getDocs(categoriesCollection);
 
-    if (categoriesData) {
-      return Object.entries(categoriesData).map(([id, value]) => ({
-        id,
-        ...(value as { [key: string]: string }),
-      })) as Category[];
-    }
-
-    return [];
+    return snapshot.docs.map((doc) => {
+      const data = doc.data() as DocumentData;
+      return {
+        id: doc.id,
+        categoryLink: data.categoryLink as string,
+        imageUrl: data.imageUrl as string,
+        name: data.name as string,
+      };
+    });
   } catch (error) {
     console.error("Error fetching categories:", error);
     return [];

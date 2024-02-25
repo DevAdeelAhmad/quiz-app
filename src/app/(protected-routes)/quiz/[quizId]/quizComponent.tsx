@@ -1,17 +1,24 @@
 "use client";
+import { useToast } from "@/components/ui/use-toast";
+import { useClerk } from "@clerk/nextjs";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { useState } from "react";
 import Sidebar from "@/components/commons/Sidebar";
 import QuestionCard from "@/components/quiz/questionCard";
 import ResultCard from "@/components/quiz/resultCard";
 import ReviewCard from "@/components/quiz/reviewCard";
-import { useToast } from "@/components/ui/use-toast";
-import { UserAuth } from "@/context/AuthContext";
-import { get, getDatabase, ref, set } from "firebase/database";
-import { notFound } from "next/navigation";
-import { useState } from "react";
 
 const calculateScore = (
   questions: any[],
-  selectedAnswers: Record<string, string>
+  selectedAnswers: { [x: string]: any; hasOwnProperty?: any }
 ) => {
   let obtScore = 0;
   questions.forEach((question) => {
@@ -35,19 +42,9 @@ const getMessage = (totalScore: number, obtainedScore: number) => {
   }
 };
 
-export default function QuizComponent(props: any) {
+export default function QuizComponent(props: { quiz: any }) {
   const quiz = props?.quiz;
-  const { user } = UserAuth();
-
-  if (quiz.quizVisibility === "Private") {
-    const allowedUsers = quiz?.accessEmails;
-    if (user && !allowedUsers.includes(user?.email)) {
-      console.log("unauthorized access");
-      notFound();
-    } else {
-      console.log("access granted");
-    }
-  }
+  const { user } = useClerk();
   const { toast } = useToast();
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [isConfirm, setIsConfirm] = useState(false);
@@ -71,36 +68,43 @@ export default function QuizComponent(props: any) {
     );
     setObtainedMarks(obtainedMarks);
     const submittion = {
-      userId: user?.uid,
-      userEmail: user?.email,
+      userId: user?.id,
+      userEmail: user?.emailAddresses[0].toString(),
       quizId: quiz?.quizId,
       totalScore: quiz?.quizQuestions?.length || 0,
       obtainedScore: obtainedMarks,
       selectedAnswers: selectedAnswers,
+      quizCategory: quiz.quizCategory,
       message: getMessage(quiz?.quizQuestions?.length || 0, obtainedMarks),
+      quizTitle: quiz?.quizTitle,
     };
 
-    const quizSubmittionsRef = ref(getDatabase(), "quizSubmittions");
-    const existingSubmittions = (await get(quizSubmittionsRef)).val() || [];
-    const updatedQuizzes = [...existingSubmittions, submittion];
-
-    set(quizSubmittionsRef, updatedQuizzes)
-      .then(() => {
-        console.log("Quiz submittion Data added to the database:", submittion);
-        toast({
-          title: "Success",
-          description: "Quiz submitted successfully!",
-          variant: "success",
-          duration: 3000,
+    try {
+      const firestore = getFirestore();
+      const quizSubmissionsCollection = collection(
+        firestore,
+        "quizSubmissions"
+      );
+      const docRef = doc(quizSubmissionsCollection, user?.id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        await updateDoc(docRef, {
+          submissions: arrayUnion(submittion),
         });
-      })
-      .catch((error) => {
-        console.error("Error adding Quiz Data to the database:", error);
+      } else {
+        await setDoc(docRef, { userId: user?.id, submissions: [submittion] });
+      }
+      toast({
+        title: "Success",
+        description: "Quiz submitted successfully!",
+        variant: "success",
+        duration: 3000,
       });
-
-    setIsSubmitted(true);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error adding quiz data to Firestore:", error);
+    }
   };
-
   return (
     <main className="flex min-h-screen w-full">
       <Sidebar />

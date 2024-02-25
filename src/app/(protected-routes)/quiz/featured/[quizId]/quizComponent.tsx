@@ -1,15 +1,21 @@
 "use client";
-import { UserAuth } from "@/context/AuthContext";
-import { notFound } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/commons/Sidebar";
 import QuestionCard from "@/components/quiz/questionCard";
-import ReviewCard from "@/components/quiz/reviewCard";
 import ResultCard from "@/components/quiz/resultCard";
-import { getDatabase, ref, set, get } from "firebase/database";
+import ReviewCard from "@/components/quiz/reviewCard";
 import { useToast } from "@/components/ui/use-toast";
+import { useClerk } from "@clerk/nextjs";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
+import { useState } from "react";
 
-const calculateScore = (
+const calculateScore: any = (
   questions: any[],
   selectedAnswers: Record<string, string>
 ) => {
@@ -36,18 +42,18 @@ const getMessage = (totalScore: number, obtainedScore: number) => {
 };
 
 export default function QuizComponent(props: any) {
-  const quiz = props?.quiz;
-  const { user } = UserAuth();
+  const quiz = props.quiz;
 
-  if (quiz.quizVisibility === "Private") {
-    const allowedUsers = quiz?.accessEmails;
-    if (user && !allowedUsers.includes(user?.email)) {
-      console.log("unauthorized access");
-      notFound();
-    } else {
-      console.log("access granted");
-    }
-  }
+  const { user } = useClerk();
+
+  // if (quiz.quizVisibility === "Private") {
+  //   const allowedUsers = quiz?.accessEmails;
+  //   if (user && !allowedUsers.includes(user?.emailAddresses)) {
+  //     console.log("unauthorized access");
+  //   } else {
+  //     console.log("access granted");
+  //   }
+  // }
   const { toast } = useToast();
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [isConfirm, setIsConfirm] = useState(false);
@@ -70,9 +76,10 @@ export default function QuizComponent(props: any) {
       selectedAnswers
     );
     setObtainedMarks(obtainedMarks);
+
     const submittion = {
-      userId: user?.uid,
-      userEmail: user?.email,
+      userId: user?.id,
+      userEmail: user?.emailAddresses[0].toString(),
       quizId: quiz?.quizId,
       totalScore: quiz?.quizQuestions?.length || 0,
       obtainedScore: obtainedMarks,
@@ -80,23 +87,29 @@ export default function QuizComponent(props: any) {
       message: getMessage(quiz?.quizQuestions?.length || 0, obtainedMarks),
     };
 
-    const quizSubmittionsRef = ref(getDatabase(), "quizSubmittions");
-    const existingSubmittions = (await get(quizSubmittionsRef)).val() || [];
-    const updatedQuizzes = [...existingSubmittions, submittion];
+    const firestore = getFirestore();
+    const quizSubmittionsCollection = collection(firestore, "quizSubmissions");
+    const quizDoc = doc(firestore, "quizSubmissions", user?.id || "");
 
-    set(quizSubmittionsRef, updatedQuizzes)
-      .then(() => {
-        console.log("Quiz submittion Data added to the database:", submittion);
-        toast({
-          title: "Success",
-          description: "Quiz submitted successfully!",
-          variant: "success",
-          duration: 3000,
-        });
-      })
-      .catch((error) => {
-        console.error("Error adding Quiz Data to the database:", error);
+    const existingSubmittion = (await getDoc(quizDoc)).data();
+    if (existingSubmittion) {
+      await updateDoc(quizDoc, {
+        submittions: [...existingSubmittion.submittions, submittion],
       });
+    } else {
+      await addDoc(quizSubmittionsCollection, {
+        userId: user?.id,
+        submittions: [submittion],
+      });
+    }
+
+    console.log("Quiz submittion Data added to Firestore:", submittion);
+    toast({
+      title: "Success",
+      description: "Quiz submitted successfully!",
+      variant: "success",
+      duration: 3000,
+    });
 
     setIsSubmitted(true);
   };
@@ -104,7 +117,7 @@ export default function QuizComponent(props: any) {
   return (
     <main className="flex min-h-screen w-full">
       <Sidebar />
-      <div className="border flex flex-col justify-center items-center border-red-700 w-full">
+      <div className="flex flex-col justify-center items-center w-full">
         <h1 className="text-4xl font-medium m-20 uppercase">
           {quiz?.quizTitle}
         </h1>

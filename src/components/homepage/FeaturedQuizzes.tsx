@@ -1,19 +1,24 @@
 "use client";
-import { FeaturedData } from "@/lib/tempData";
-import { Suspense, useEffect, useRef, useState } from "react";
+import getCategories from "@/lib/getCategories";
+import { getFeaturedQuizzes } from "@/lib/getFeaturedQuizzes";
+import { Quiz, QuizWithCategory } from "@/lib/interfaces";
+import { useEffect, useRef, useState } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
+import SkeletonCard from "../search/SkeletonCard";
 import SingleFeaturedQuiz from "./SingleFeaturedQuiz";
-import { getFeaturedQuizzes } from "@/lib/getFeaturedQuizzes";
-import { Quiz, QuizWithCategory } from "@/lib/interfaces";
-import getCategories from "@/lib/getCategories";
 
 const FeaturedQuizzes = () => {
   const [width, setWidth] = useState<number | undefined>(0);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const [allQuizzes, setAllQuizzes] = useState<QuizWithCategory[]>([]);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const swiperRef = useRef(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchQuizzesAndCategories = async () => {
@@ -73,63 +78,75 @@ const FeaturedQuizzes = () => {
   };
 
   return (
-    <section className="flex flex-col gap-5 p-5 lg:p-10 items-center justify-center w-full">
-      <h1 className="text-2xl lg:text-3xl font-semibold">Featured Quizzes</h1>
-      <div className="flex w-full items-center justify-center relative">
-        <div className="flex justify-center items-center w-full lg:pl-20">
-          <Swiper
-            spaceBetween={20}
-            slidesPerView={getSlidesPerView()}
-            className="max-w-7xl"
-            style={{ padding: "17px" }}
-            direction="horizontal"
-            ref={swiperRef}
-            onSlideChange={(swiper) => {
-              setActiveIndex(swiper.activeIndex);
-            }}
-            loop={true}
-          >
-            {allQuizzes.map((quiz, index) => (
-              <SwiperSlide
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+    <>
+      {isMounted ? (
+        <section className="flex flex-col gap-5 p-5 lg:p-10 items-center justify-center w-full">
+          <h1 className="text-2xl lg:text-3xl font-semibold">
+            Featured Quizzes
+          </h1>
+          <div className="flex w-full items-center justify-center relative">
+            <div className="flex justify-center items-center w-full lg:pl-20">
+              <Swiper
+                spaceBetween={20}
+                slidesPerView={getSlidesPerView()}
+                className="max-w-7xl"
+                style={{ padding: "17px" }}
+                direction="horizontal"
+                ref={swiperRef}
+                onSlideChange={(swiper) => {
+                  setActiveIndex(swiper.activeIndex);
                 }}
-                key={index}
+                loop={true}
               >
-                <SingleFeaturedQuiz
-                  key={index}
-                  isFavorite={false}
-                  creatorImgUrl={"/assets/pfp.png"}
-                  creatorName={"Admin"}
-                  quizId={quiz.quizId}
-                  title={quiz.quizTitle}
-                  image={quiz.categoryImage}
-                  category={quiz.quizCategory}
-                  subCategory={quiz.quizSubCategory}
-                  difficulty={quiz.quizDifficulty}
-                  duration={quiz.quizDuration}
-                  rating={quiz.quizRating}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                {allQuizzes.map((quiz, index) => (
+                  <SwiperSlide
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    key={index}
+                  >
+                    <SingleFeaturedQuiz
+                      key={index}
+                      isFavorite={false}
+                      creatorImgUrl={"/assets/pfp.png"}
+                      creatorName={"Admin"}
+                      quizId={quiz.quizId}
+                      title={quiz.quizTitle}
+                      image={quiz.categoryImage}
+                      category={quiz.quizCategory}
+                      subCategory={quiz.quizSubCategory}
+                      difficulty={quiz.quizDifficulty}
+                      duration={quiz.quizDuration}
+                      rating={quiz.quizRating}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+            <div
+              onClick={nextCard}
+              className="flex absolute right-[-4%] sm:right-[1%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
+            >
+              <GrNext />
+            </div>
+            <div
+              onClick={prevCard}
+              className="flex absolute left-[-4%] sm:left-[1%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
+            >
+              <GrPrevious />
+            </div>
+          </div>
+        </section>
+      ) : (
+        <div className="flex mt-6 justify-between gap-x-4 mx-3">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
-        <div
-          onClick={nextCard}
-          className="flex absolute right-[-4%] sm:right-[1%] top-[45%] md:right-[-1%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
-        >
-          <GrNext />
-        </div>
-        <div
-          onClick={prevCard}
-          className="flex absolute left-[-4%] sm:left-[1%] top-[45%] md:left-[-1%] lg:left-[5%] z-[50] text-black dark:text-white dark:border-white border-black border-2 rounded-full p-[3px] md:p-3 cursor-pointer"
-        >
-          <GrPrevious />
-        </div>
-      </div>
-    </section>
+      )}
+    </>
   );
 };
 

@@ -1,46 +1,42 @@
-import { database } from "@/lib/firebase";
-import {
-  ref,
-  get,
-  child,
-  getDatabase,
-  DatabaseReference,
-} from "firebase/database";
+import { firestore } from "@/lib/firebase";
 import { Quiz, QuizQuestion } from "@/lib/interfaces";
+import { collection, getDocs } from "firebase/firestore";
 
-export const getQuizzes = async (visiblityType: string | null = null): Promise<Quiz[]> => {
+export const getQuizzes = async (
+  visibilityType: string | null = null
+): Promise<Quiz[]> => {
   try {
-    const quizzesRef: DatabaseReference = ref(database, "quizzes");
-    const snapshot = await get(child(quizzesRef, "/"));
+    const quizzesCollection = collection(firestore, "quizzes");
+    const snapshot = await getDocs(quizzesCollection);
 
-    if (snapshot.exists()) {
-      const quizzes: Quiz[] = Object.entries(snapshot.val()).map(
-        ([quizId, quizData]: [string, any]) => {
-          const quiz: Quiz = {
-            quizId: quizData.quizId,
-            quizCategory: quizData.quizCategory,
-            quizDescription: quizData.quizDescription,
-            quizDifficulty: quizData.quizDifficulty,
-            quizDuration: quizData.quizDuration,
-            quizQuestions: quizData.quizQuestions as QuizQuestion[],
-            quizSubCategory: quizData.quizSubCategory,
-            quizTags: quizData.quizTags,
-            quizTitle: quizData.quizTitle,
-            quizVisibility: quizData.quizVisibility,
-            categoryImage: "",
-            accessEmails:quizData.accessEmails,
-            quizRating: quizData.quizRating,
-          };
-          return quiz;
-        }
-      );
-      if(visiblityType)
-      {
+    if (!snapshot.empty) {
+      const quizzes: Quiz[] = snapshot.docs.map((doc) => {
+        const quizData = doc.data();
+        const quiz: Quiz = {
+          quizId: quizData.quizId,
+          quizCategory: quizData.quizCategory,
+          quizDescription: quizData.quizDescription,
+          quizDifficulty: quizData.quizDifficulty,
+          quizDuration: quizData.quizDuration,
+          quizQuestions: quizData.quizQuestions as QuizQuestion[],
+          quizSubCategory: quizData.quizSubCategory,
+          quizTags: quizData.quizTags,
+          quizTitle: quizData.quizTitle,
+          quizVisibility: quizData.quizVisibility,
+          categoryImage: "",
+          accessEmails: quizData.accessEmails,
+          quizRating: quizData.quizRating,
+        };
+        return quiz;
+      });
+
+      if (visibilityType) {
         const filteredQuizzes = quizzes.filter(
-          (quiz) => quiz.quizVisibility === visiblityType
+          (quiz) => quiz.quizVisibility === visibilityType
         );
         return filteredQuizzes;
       }
+
       return quizzes;
     } else {
       console.error("No quizzes found in the database.");

@@ -1,12 +1,12 @@
 import Sidebar from "@/components/commons/Sidebar";
-import TabList from "@/components/profile/Tabs";
+import QuizTab from "@/components/profile/QuizTab";
 
 const ProfilePage = () => {
   return (
     <main className="flex min-h-screen w-full">
       <Sidebar />
       <div className="flex flex-col items-center w-full py-10 gap-5">
-        <TabList />
+        <QuizTab />
       </div>
     </main>
   );

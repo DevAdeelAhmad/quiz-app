@@ -1,6 +1,5 @@
 "use client";
 import Sidebar from "@/components/commons/Sidebar";
-import { UserAuth } from "@/context/AuthContext";
 import Filters from "@/components/search/Filters";
 import SearchResults from "@/components/search/SearchResults";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { getQuizzes } from "@/lib/getPublicQuizzes";
 import { Quiz } from "@/lib/interfaces";
 import { useEffect, useState } from "react";
 import { getFeaturedQuizzes } from "@/lib/getFeaturedQuizzes";
+import { useClerk } from "@clerk/nextjs";
 
 interface Category {
   id: string;
@@ -21,7 +21,7 @@ interface QuizWithCategory extends Quiz {
   categoryImage: string;
 }
 const SearchPage = () => {
-  const { user } = UserAuth();
+  const { user } = useClerk();
   const [quizzes, setQuizzes] = useState<QuizWithCategory[]>([]);
   const [filteredQuizzes, setFilteredQuizzes] = useState<QuizWithCategory[]>(
     []
@@ -39,33 +39,38 @@ const SearchPage = () => {
     const fetchQuizzesAndCategories = async () => {
       const allQuizzes: Quiz[] = await getQuizzes();
       const featuredQuizzes: Quiz[] = await getFeaturedQuizzes();
-      const fetchedQuizzes: Quiz[] = [...allQuizzes, ...featuredQuizzes];
-      if (user) {
-        const userPrivateQuizzes = fetchedQuizzes.filter(
-          (quiz) =>
-            quiz.quizVisibility === "Private" &&
-            quiz.accessEmails?.includes(user.email)
-        );
-        setQuizzes(userPrivateQuizzes);
-        setFilteredQuizzes(userPrivateQuizzes);
-      } else {
-        const publicAndFeaturedQuizzes = fetchedQuizzes.filter(
-          (quiz) => quiz.quizVisibility === "Public" || quiz.isFeatured
-        );
-        setQuizzes(publicAndFeaturedQuizzes);
-        setFilteredQuizzes(publicAndFeaturedQuizzes);
-      }
       const categoriesData = await getCategories();
       setCategories(categoriesData);
+      if (user) {
+        const userPrivateQuizzes = allQuizzes.filter(
+          (quiz) =>
+            quiz.quizVisibility === "Private" &&
+            quiz.accessEmails?.includes(user.emailAddresses[0].toString())
+        );
+        console.log(userPrivateQuizzes);
+        setQuizzes(userPrivateQuizzes);
+      }
+      const fetchedQuizzes: Quiz[] = [...quizzes, ...featuredQuizzes];
+      const quizzesWithCategory: QuizWithCategory[] = fetchedQuizzes.map(
+        (quiz) => {
+          const category = categories?.find(
+            (cat) => cat.name === quiz.quizCategory
+          );
+          return {
+            ...quiz,
+            categoryImage: category?.imageUrl || "",
+          };
+        }
+      );
+      setFilteredQuizzes(quizzesWithCategory);
     };
-
     fetchQuizzesAndCategories();
   }, [user]);
+
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    const filtered = quizzes.filter(
+    const filtered = filteredQuizzes.filter(
       (quiz) =>
-        // quiz.quizVisibility === "Public" &&
         quiz.quizTitle.toLowerCase().includes(value.toLowerCase()) ||
         quiz.quizCategory.toLowerCase().includes(value.toLowerCase()) ||
         quiz.quizTags?.some((tag) =>
@@ -91,21 +96,15 @@ const SearchPage = () => {
         searchTerm: searchTerm,
       };
 
-      const filtered = quizzes.filter((quiz1) => {
-        const isQuizVisible = quiz1.quizVisibility === "Public";
-
-        // if (!isQuizVisible) {
-        //   return false;
-        // }
-
+      const filtered = filteredQuizzes.filter((quiz1) => {
         const difficultyFilter =
           !filtersToApply.difficulty ||
           quiz1.quizDifficulty.toLowerCase() ===
-          filtersToApply.difficulty.toLowerCase();
+            filtersToApply.difficulty.toLowerCase();
         const categoryFilter =
           !filtersToApply.category ||
           quiz1.quizCategory.toLowerCase() ===
-          filtersToApply.category.toLowerCase();
+            filtersToApply.category.toLowerCase();
         const ratingFilter =
           filtersToApply.rating === null ||
           quiz1.quizRating === parseInt(filtersToApply.rating, 10);
@@ -152,8 +151,9 @@ const SearchPage = () => {
       duration: null,
     });
     setSearchTerm("");
-    setFilteredQuizzes(quizzes);
+    setFilteredQuizzes(filteredQuizzes);
   };
+  console.log(filteredQuizzes);
 
   return (
     <main className="flex min-h-screen w-full">
@@ -169,12 +169,14 @@ const SearchPage = () => {
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
-          <Filters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={clearFilters}
-            categories={categories?.map((cat) => cat.name) || []}
-          />
+          <div className="w-full">
+            <Filters
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={clearFilters}
+              categories={categories?.map((cat) => cat.name) || []}
+            />
+          </div>
           <h1 className="text-xl lg:text-2xl font-semibold">
             Search Results ({filteredQuizzes.length})
           </h1>

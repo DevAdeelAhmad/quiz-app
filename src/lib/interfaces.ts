@@ -17,6 +17,7 @@ export interface Quiz {
 }
 
 export interface QuizSubmission {
+  [x: string]: never[];
   quizId: string;
   message: string;
   obtainedScore: number;
